@@ -8,8 +8,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#8629d3", // Màu tím chính
+        secondary: "#814cad", // Màu gradient tím
+        black: "#000000",
+        white: "#FFFFFF",
+      },
+      spacing: {
+        layout: "1.5rem", // Cố định khoảng cách giữa các div
       },
     },
   },
