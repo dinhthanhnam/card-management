@@ -3,7 +3,7 @@
 @tailwind utilities;
 /* Định nghĩa các class tái sử dụng */
 .container {
-  @apply mx-auto max-w-md bg-white shadow-md shadow-purple-400 rounded-2xl p-layout;
+  @apply mx-auto bg-white shadow-md shadow-purple-400 rounded-2xl p-layout border-2 border-fuchsia-300;
 }
 
 .input-field {
@@ -11,7 +11,7 @@
 }
 
 .button-primary {
-  @apply w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition;
+  @apply w-full bg-primary text-white font-semibold py-2 rounded-lg hover:bg-secondary transition duration-300;
 }
 
 .bg-gradient-purple {

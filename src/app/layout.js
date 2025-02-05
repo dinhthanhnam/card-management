@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
         <body className="bg-gradient-purple min-h-screen">
-        <LoadingBar loading={loading} />
+        <LoadingBar loading={loading}/>
         {children}
         </body>
         </html>

@@ -9,7 +9,7 @@ export default {
     extend: {
       colors: {
         primary: "#8629d3", // Màu tím chính
-        secondary: "#814cad", // Màu gradient tím
+        secondary: "#a029c7", // Màu gradient tím
         black: "#000000",
         white: "#FFFFFF",
       },

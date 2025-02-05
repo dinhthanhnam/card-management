@@ -1,4 +1,4 @@
-import FormInput from "./FormInput";
+import FormInput from "../common/FormInput";
 import CommonBottom from "@/components/common/CommonBottom";
 
 export default function AuthForm({ type }) {
