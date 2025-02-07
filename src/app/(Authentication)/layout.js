@@ -1,18 +1,18 @@
 "use client";
-import "./globals.css";
+import "../globals.css";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import LoadingBar from "../components/Visibility/LoadingBar";
+import LoadingBar from "../../components/Visibility/LoadingBar";
 
-export default function RootLayout({ children }) {
+export default function AuthLayout({ children }) {
     const [loading, setLoading] = useState(false);
     const pathname = usePathname();
 
     useEffect(() => {
         setLoading(true);
-        const timeout = setTimeout(() => setLoading(false), 500); // Giả lập thời gian loading
+        const timeout = setTimeout(() => setLoading(false), 500); // Simulate loading time
         return () => clearTimeout(timeout);
-    }, [pathname]); // Khi pathname thay đổi, chạy hiệu ứng loading
+    }, [pathname]); // Run loading effect when pathname changes
 
     return (
         <html lang="en">

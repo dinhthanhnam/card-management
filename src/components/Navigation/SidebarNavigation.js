@@ -16,7 +16,7 @@ export default function SidebarNavigation({ children }) {
     const navItems = [
         { id: 1, label: "Trang chủ", icon: HomeIcon, path: "/" },
         { id: 2, label: "Dashboard", icon: LayoutDashboardIcon, path: "/dashboard" },
-        { id: 3, label: "Thông tin cập nhật", icon: NewspaperIcon, path: "/news" },
+        { id: 3, label: "Bản tin", icon: NewspaperIcon, path: "/news" },
         { id: 4, label: "Thẻ của bạn", icon: CreditCardIcon, path: "/cards" },
         { id: 5, label: "Hỗ trợ", icon: MessageCircleQuestionIcon, path: "/support" },
     ];
@@ -24,7 +24,7 @@ export default function SidebarNavigation({ children }) {
     return (
         <div className="flex flex-col border-r-2 border-r-fuchsia-300 shadow-md rounded-md overflow-y-auto h-full">
             {/* Logo */}
-            <div className="flex justify-center border-b border-b-fuchsia-300 rounded-md p-4">
+            <div className="flex h-20 justify-center border-b border-b-fuchsia-300 rounded-md p-4">
                 <OpenwayLogo />
             </div>
 

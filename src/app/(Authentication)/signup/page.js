@@ -4,7 +4,7 @@ import OpenwayLogo from "@/components/static/OpenwayLogo";
 import CommonBottom from "@/components/common/CommonBottom";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function SignupPage() {
     const router = useRouter();
     return (
         <div className="flex flex-col min-h-screen">
