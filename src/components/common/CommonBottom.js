@@ -1,4 +1,4 @@
-export default function CommonBottom({ children, className, onClick }) {
+export default function CommonBottom({ children, className, onClick, href }) {
     return (
         <button
             className={`button-primary border-2 border-b-fuchsia-300

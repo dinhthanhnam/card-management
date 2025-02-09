@@ -15,9 +15,7 @@ export default function SidebarNavigation({ children }) {
 
     const navItems = [
         { id: 1, label: "Trang chủ", icon: HomeIcon, path: "/" },
-        { id: 2, label: "Dashboard", icon: LayoutDashboardIcon, path: "/dashboard" },
-        { id: 3, label: "Bản tin", icon: NewspaperIcon, path: "/news" },
-        { id: 4, label: "Thẻ của bạn", icon: CreditCardIcon, path: "/cards" },
+        { id: 4, label: "Chủ thẻ", icon: CreditCardIcon, path: "/cardholder" },
         { id: 5, label: "Hỗ trợ", icon: MessageCircleQuestionIcon, path: "/support" },
     ];
 

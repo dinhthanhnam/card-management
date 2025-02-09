@@ -1,17 +1,19 @@
 "use client";
 import "../globals.css";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import LoadingBar from "../../components/Visibility/LoadingBar";
 import SidebarNavigation from "@/components/Navigation/SidebarNavigation";
 import Header from "@/components/common/Header";
 import IconHolder from "@/components/common/IconHolder";
-import { MenuIcon, X } from "lucide-react";
+import {ChevronRight, MenuIcon, X} from "lucide-react";
+import ChevronHolder from "@/components/common/Chevron";
 
 export default function AppLayout({ children }) {
     const [loading, setLoading] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
         setLoading(true);
@@ -50,11 +52,22 @@ export default function AppLayout({ children }) {
                     <div className="md:hidden">
                         <IconHolder>
                             <MenuIcon
-                                className="w-6 h-6 text-gray-500 cursor-pointer"
+                                className="w-5 h-5 text-gray-500 cursor-pointer"
                                 onClick={() => setIsSidebarOpen(true)}
                             />
                         </IconHolder>
                     </div>
+                    {pathname === "/cardholder" && (
+                        <>
+                            <ChevronHolder>
+                                <ChevronRight className="w-5 h-5 text-gray-500"/>
+                            </ChevronHolder>
+                            <IconHolder active={pathname ==="/cardholder"}>
+                                <p className="text-sm text-gray-600">Danh sách chủ thẻ</p>
+                            </IconHolder>
+                        </>
+                    )}
+
                 </Header>
                 {children}
             </div>
