@@ -1,11 +1,12 @@
 "use client";
 import OpenwayLogo from "@/components/static/OpenwayLogo";
 import {
+    ArrowLeftRightIcon,
     CreditCardIcon,
     HomeIcon,
     LayoutDashboardIcon,
     MessageCircleQuestionIcon,
-    NewspaperIcon,
+    NewspaperIcon, PiggyBankIcon,
 } from "lucide-react";
 import NavigationButton from "@/components/common/NavigationButton";
 import { useState } from "react";
@@ -15,7 +16,9 @@ export default function SidebarNavigation({ children }) {
 
     const navItems = [
         { id: 1, label: "Trang chủ", icon: HomeIcon, path: "/" },
-        { id: 4, label: "Chủ thẻ", icon: CreditCardIcon, path: "/cardholder" },
+        { id: 2, label: "Chủ thẻ", icon: PiggyBankIcon, path: "/cardholder" },
+        { id: 3, label: "Thẻ", icon: CreditCardIcon, path: "/card" },
+        { id: 4, label: "Giao dịch", icon: ArrowLeftRightIcon, path: "/transaction" },
         { id: 5, label: "Hỗ trợ", icon: MessageCircleQuestionIcon, path: "/support" },
     ];
 

@@ -30,6 +30,7 @@ export default function CardPage() {
             {/*        <div className="w-1/3 bg-white p-4 shadow-md">Content 3</div>*/}
             {/*    </div>*/}
             {/*</div>*/}
+            danh sách thẻ
         </>
     );
 }

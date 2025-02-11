@@ -12,10 +12,10 @@ export default function RootContent() {
                         Quick action
                     </span>
                     <div>
-                        <CommonBottom className="mx-2">Cardholder</CommonBottom>
+                        <CommonBottom className="mx-2" onClick={() => router.push('/cardholder')}>Chủ thẻ</CommonBottom>
                     </div>
                     <div>
-                        <CommonBottom className="mx-2">Transaction</CommonBottom>
+                        <CommonBottom className="mx-2" onClick={() => router.push('/Card')}>Thẻ</CommonBottom>
                     </div>
                 </div>
 

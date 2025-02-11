@@ -48,8 +48,8 @@ export default function AppLayout({ children }) {
 
             {/* Main Content */}
             <div className="flex flex-col w-full">
-                <Header>
-                    <div className="md:hidden">
+                <div className={`flex flex-row`}>
+                    <div className="md:hidden border-b-2 border-fuchsia-300 content-center">
                         <IconHolder>
                             <MenuIcon
                                 className="w-5 h-5 text-gray-500 cursor-pointer"
@@ -57,18 +57,41 @@ export default function AppLayout({ children }) {
                             />
                         </IconHolder>
                     </div>
-                    {pathname === "/cardholder" && (
-                        <>
-                            <ChevronHolder>
-                                <ChevronRight className="w-5 h-5 text-gray-500"/>
-                            </ChevronHolder>
-                            <IconHolder active={pathname ==="/cardholder"}>
-                                <p className="text-sm text-gray-600">Danh sách chủ thẻ</p>
-                            </IconHolder>
-                        </>
-                    )}
 
-                </Header>
+                    <Header>
+                        {pathname === "/cardholder" && (
+                            <>
+                                <ChevronHolder>
+                                    <ChevronRight className="w-5 h-5 text-gray-500"/>
+                                </ChevronHolder>
+                                <IconHolder active={pathname ==="/cardholder"} onClick={() => router.push("/cardholder")}>
+                                    <p className="text-sm text-gray-600">Danh sách chủ thẻ</p>
+                                </IconHolder>
+                            </>
+                        )}
+                        {pathname === "/card" && (
+                            <>
+                                <ChevronHolder>
+                                    <ChevronRight className="w-5 h-5 text-gray-500"/>
+                                </ChevronHolder>
+                                <IconHolder active={pathname ==="/card"} onClick={() => router.push("/card")}>
+                                    <p className="text-sm text-gray-600">Danh sách thẻ</p>
+                                </IconHolder>
+                            </>
+                        )}
+                        {pathname === "/transaction" && (
+                            <>
+                                <ChevronHolder>
+                                    <ChevronRight className="w-5 h-5 text-gray-500"/>
+                                </ChevronHolder>
+                                <IconHolder active={pathname ==="/transaction"} onClick={() => router.push("/transaction")}>
+                                    <p className="text-sm text-gray-600">Danh sách giao dịch</p>
+                                </IconHolder>
+                            </>
+                        )}
+                    </Header>
+                </div>
+
                 {children}
             </div>
         </div>
