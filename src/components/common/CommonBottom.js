@@ -1,4 +1,4 @@
-export default function CommonBottom({ children, className, onClick, type}) {
+export default function CommonButton({ children, className, onClick, type}) {
     return (
         <button
             className={`button-primary border-2 border-b-fuchsia-300

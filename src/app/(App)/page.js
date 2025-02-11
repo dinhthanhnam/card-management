@@ -15,7 +15,7 @@ export default function RootContent() {
                         <CommonBottom className="mx-2" onClick={() => router.push('/cardholder')}>Chủ thẻ</CommonBottom>
                     </div>
                     <div>
-                        <CommonBottom className="mx-2" onClick={() => router.push('/Card')}>Thẻ</CommonBottom>
+                        <CommonBottom className="mx-2" onClick={() => router.push('/card')}>Thẻ</CommonBottom>
                     </div>
                 </div>
 
