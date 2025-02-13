@@ -8,13 +8,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#8629d3", // Màu tím chính
-        secondary: "#a029c7", // Màu gradient tím
+        primary: "#7dd3fc",
+        secondary: "#0ea5e9",
         black: "#000000",
         white: "#FFFFFF",
       },
       spacing: {
-        layout: "1.5rem", // Cố định khoảng cách giữa các div
+        layout: "1.0rem", // Cố định khoảng cách giữa các div
+      },
+      fontFamily: {
+        sans: ["Signika", "sans-serif"], // Đổi font mặc định
+      },
+      fontSize: {
+        base: "16px",
+        lg: "18px",
+        xl: "20px",
+      },
+      fontWeight: {
+        normal: "400",
+        semibold: "500",
+        bold: "600",
       },
     },
   },

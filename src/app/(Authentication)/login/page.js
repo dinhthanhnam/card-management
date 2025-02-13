@@ -30,7 +30,7 @@ export default function LoginPage() {
 
             <div className="flex flex-col items-center justify-center flex-1">
                 <div className="container max-w-md">
-                    <h2 className="text-3xl font-bold text-center text-primary mb-6">Đăng nhập</h2>
+                    <h2 className="text-3xl font-bold text-center text-secondary mb-6">Đăng nhập</h2>
                     {error && <p className="text-red-500 text-center">{error}</p>}
                     <form className="space-y-4" onSubmit={handleSubmit}>
                         <FormInput label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />

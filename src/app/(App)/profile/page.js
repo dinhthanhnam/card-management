@@ -4,7 +4,7 @@ import CommonBottom from "@/components/common/CommonBottom";
 export default function ProfilePage({ children }) {
     return (
         <div className="container md:w-2/3 m-layout">
-            <h2 className="text-3xl font-bold text-center text-primary mb-layout">
+            <h2 className="text-3xl font-bold text-center text-secondary mb-layout">
                 Thông tin cá nhân
             </h2>
             <form className="space-y-layout">

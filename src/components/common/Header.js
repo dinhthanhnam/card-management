@@ -12,7 +12,7 @@ export default function Header({children}) {
     return (
         <div className={`flex flex-col w-full`}>
             <div className={`flex flex-row h-min content-between border-b-2 
-                border-fuchsia-300 bg-purple-100 bg-opacity-30 justify-between p-3`}>
+                border-secondary bg-sky-200 bg-opacity-30 justify-between p-3`}>
                 <div className={`flex flex-row my-auto gap-1`}>
                     <IconHolder onClick={() => router.push("/")} active={pathname === "/"}>
                         <HomeIcon className="w-5 h-5 text-gray-500"/>

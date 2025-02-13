@@ -13,7 +13,7 @@ export default function SearchBar({ value, onChange, onSearch, placeholder = "T�
             />
             <button
                 onClick={onSearch} // Đảm bảo khi click sẽ gọi hàm tìm kiếm
-                className="border border-fuchsia-300 rounded bg-white p-2 hover:bg-gray-100 duration-100"
+                className="border border-primary rounded bg-white p-2 hover:bg-sky-100 duration-100"
             >
                 <Search className="w-5 h-5 text-gray-500" />
             </button>

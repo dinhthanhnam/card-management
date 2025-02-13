@@ -5,9 +5,9 @@ import FormInput from "@/components/common/FormInput";
 import SearchBar from "@/components/common/SearchBar";
 
 const transactionsMock = [
-    { id: 1, transactionNumber: "123123ABCDQ", cardNumber: "1234 5678 9101 1121", type: "Thanh toán", amount: "500,000 VND", status: "Thành công" },
+    { id: 1, transactionNumber: "123123ABCDQ", cardNumber: "1234 5678 9101 1121", type: "Rút tiền", amount: "500,000 VND", status: "Thành công" },
     { id: 2, transactionNumber: "123123ABDDQ", cardNumber: "5678 9101 1121 3141", type: "Rút tiền", amount: "1,000,000 VND", status: "Thất bại" },
-    { id: 3, transactionNumber: "123123AB1DQ", cardNumber: "9101 1121 3141 5161", type: "Chuyển khoản", amount: "200,000 VND", status: "Đang xử lý" },
+    { id: 3, transactionNumber: "123123AB1DQ", cardNumber: "9101 1121 3141 5161", type: "Nạp tiền", amount: "200,000 VND", status: "Đang xử lý" },
 ];
 
 export default function TransactionPage() {

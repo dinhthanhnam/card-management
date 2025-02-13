@@ -3,19 +3,20 @@ import { useState } from "react";
 import {Search, Filter, LockIcon, LockKeyhole, LockKeyholeOpen, DollarSign, ListCollapse, X} from "lucide-react";
 import FormInput from "@/components/common/FormInput";
 import { FormSelect } from "@/components/common/FormSelect";
+import { BiDetail } from "react-icons/bi";
 
 export default function CardPage() {
     const cardData = [
-        { cardNumber: "1234 5678 9101 1121", type: "Visa", bank: "Vietcombank", balance: 10000000, locked: false, limit: 20000000,
+        { cardNumber: "1234 5678 9101 1121", type: "Visa", paymentNetwork: "Visa", balance: 10000000, locked: false, limit: 20000000,
             cardholder:
                 {
                     id: 1,
                     name: "Nguyễn Văn A",
                     email: "a@gmail.com",}
         },
-        { cardNumber: "1111 2222 3333 4444", type: "MasterCard", bank: "Techcombank", balance: 5000000, locked: false, limit: 2000000 },
-        { cardNumber: "5555 6666 7777 8888", type: "Visa", bank: "Vietinbank", balance: 12000000, locked: true, limit: 200000},
-        { cardNumber: "9999 0000 1111 2222", type: "JCB", bank: "BIDV", balance: 8000000, locked: true, limit: 1000000 },
+        { cardNumber: "1111 2222 3333 4444", type: "MasterCard", paymentNetwork: "Visa", balance: 5000000, locked: false, limit: 2000000 },
+        { cardNumber: "5555 6666 7777 8888", type: "Visa", paymentNetwork: "Visa", balance: 12000000, locked: true, limit: 200000},
+        { cardNumber: "9999 0000 1111 2222", type: "JCB", paymentNetwork: "Visa", balance: 8000000, locked: true, limit: 1000000 },
     ];
 
     const [searchType, setSearchType] = useState(null);
@@ -23,7 +24,6 @@ export default function CardPage() {
     const [filter, setFilter] = useState({
         cardNumber: "",
         type: "",
-        bank: "",
         minBalance: "",
         maxBalance: "",
     });
@@ -112,13 +112,6 @@ export default function CardPage() {
                                 value={filter.type}
                                 onChange={(e) => setFilter({ ...filter, type: e.target.value })}
                             />
-                            <FormSelect
-                                label="Ngân hàng"
-                                name="bank"
-                                options={["Vietcombank", "Techcombank", "Vietinbank", "BIDV"]}
-                                value={filter.bank}
-                                onChange={(e) => setFilter({ ...filter, bank: e.target.value })}
-                            />
                             <FormInput
                                 label="Số dư từ"
                                 type="number"
@@ -145,18 +138,23 @@ export default function CardPage() {
                         <tr className="bg-gray-100">
                             <th className="border p-2">Số thẻ</th>
                             <th className="border p-2">Loại thẻ</th>
-                            <th className="border p-2">Ngân hàng</th>
+                            <th className="border p-2">Payment Network</th>
                             <th className="border p-2">Số dư</th>
-                            <th className="border p-2">Action</th>
+                            <th className="border p-2">Hành động</th>
                         </tr>
                         </thead>
                         <tbody>
                         {filteredCards.length > 0 ? (
                             filteredCards.map((card) => (
-                                <tr key={card.cardNumber} className="hover:bg-gray-100">
-                                    <td className="border p-2">{card.cardNumber}</td>
+                                <tr key={card.cardNumber} className="hover:bg-gray-100 cursor-pointer">
+                                    <td className="border p-2 w-1/3">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <BiDetail className="text-sky-700 text-lg"/>
+                                            <span>{card.cardNumber}</span>
+                                        </div>
+                                    </td>
                                     <td className="border p-2">{card.type}</td>
-                                    <td className="border p-2">{card.bank}</td>
+                                    <td className="border p-2">{card.paymentNetwork}</td>
                                     <td className="border p-1">{card.balance.toLocaleString()} VND</td>
                                     <th className="border">
                                         <div className={`flex items-center justify-center gap-4`}>

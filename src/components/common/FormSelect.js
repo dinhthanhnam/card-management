@@ -11,7 +11,7 @@ export function FormSelect({ label, name, options = [], value = "", disabled = f
             >
                 <option value="">Chọn...</option>
                 {options.map((option, index) => (
-                    <option key={index} value={option}>
+                    <option className={`mr-4`} key={index} value={option}>
                         {option}
                     </option>
                 ))}

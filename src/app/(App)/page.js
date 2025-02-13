@@ -19,12 +19,6 @@ export default function RootContent() {
                     </div>
                 </div>
 
-                <div
-                    className="m-2 p-2 md:ml-4 border-gray-300 border rounded flex-grow overflow-auto flex flex-row gap-2">
-                    <div className="w-1/3 bg-white p-4 shadow-md">Content 1</div>
-                    <div className="w-1/3 bg-white p-4 shadow-md">Content 2</div>
-                    <div className="w-1/3 bg-white p-4 shadow-md">Content 3</div>
-                </div>
             </div>
         </>
     );

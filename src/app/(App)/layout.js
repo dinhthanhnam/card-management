@@ -59,12 +59,12 @@ export default function AppLayout({ children }) {
                     </div>
 
                     <Header>
-                        {pathname === "/cardholder" && (
+                        {pathname === "/client" && (
                             <>
                                 <ChevronHolder>
                                     <ChevronRight className="w-5 h-5 text-gray-500"/>
                                 </ChevronHolder>
-                                <IconHolder active={pathname ==="/cardholder"} onClick={() => router.push("/cardholder")}>
+                                <IconHolder active={pathname ==="/client"} onClick={() => router.push("/cardholder")}>
                                     <p className="text-sm text-gray-600">Danh sách chủ thẻ</p>
                                 </IconHolder>
                             </>

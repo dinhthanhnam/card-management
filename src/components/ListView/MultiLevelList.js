@@ -4,6 +4,7 @@ import CommonModal from "@/components/common/CommonModal";
 import FormInput from "@/components/common/FormInput";
 import { X } from "lucide-react";
 import CommonBottom from "@/components/common/CommonBottom";
+import {BiDetail} from "react-icons/bi";
 
 export default function MultiLevelList() {
     const [selectedUser, setSelectedUser] = useState(null);
@@ -44,12 +45,11 @@ export default function MultiLevelList() {
                         <th className="border p-2">Họ tên</th>
                         <th className={`border p-2 ${selectedUser ? "hidden" : ""}`}>Email</th>
                         <th className="border p-2">Số điện thoại</th>
-                        <th className="border p-2">Chi tiết</th>
                     </tr>
                     </thead>
                     <tbody>
                     {filteredData.map((user) => (
-                        <tr key={user.id} className={`cursor-pointer hover:bg-fuchsia-100 ${selectedUser?.id === user.id ? "bg-fuchsia-300" : ""}`}
+                        <tr key={user.id} className={`cursor-pointer hover:bg-gray-100 ${selectedUser?.id === user.id ? "bg-gray-300" : ""}`}
                             onClick={() => {
                                 if (!modal) {
                                     setSelectedUser(user);
@@ -59,18 +59,20 @@ export default function MultiLevelList() {
                                 setModal(false);
                             }}>
                             <td className="border p-2 text-center">{user.id}</td>
-                            <td className="border p-2">{user.name}</td>
+                            <td className="border p-2">
+                                <div className={`flex items-center justify-start gap-2`}>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedUser(user);
+                                        setModal(true);
+                                    }}>
+                                        <BiDetail className="text-sky-700 text-lg"/>
+                                    </button>
+                                    <span>{user.name}</span>
+                                </div>
+                            </td>
                             <td className={`border p-2 ${selectedUser ? "hidden" : ""}`}>{user.email}</td>
                             <td className="border p-2">{user.phone}</td>
-                            <td className="border p-2">
-                                <CommonBottom onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedUser(user);
-                                    setModal(true);
-                                }}>
-                                    Xem chi tiết
-                                </CommonBottom>
-                            </td>
                         </tr>
                     ))}
                     </tbody>
@@ -99,9 +101,16 @@ export default function MultiLevelList() {
                         <tbody>
                         {selectedUser.cards.length > 0 ? selectedUser.cards.map((card) => (
                             <tr key={card.cardNumber}
-                                className={`cursor-pointer hover:bg-gray-100 ${selectedCard?.cardNumber === card.cardNumber ? "bg-fuchsia-300" : ""}`}
+                                className={`cursor-pointer hover:bg-gray-100 ${selectedCard?.cardNumber === card.cardNumber ? "bg-gray-300" : ""}`}
                                 onClick={() => setSelectedCard(card)}>
-                                <td className="border p-2">{card.cardNumber}</td>
+                                <td className="border p-2">
+                                    <div className={`flex items-center justify-start gap-2`}>
+                                        <button>
+                                            <BiDetail className="text-sky-700 text-lg"/>
+                                        </button>
+                                        <span className={`whitespace-nowrap`}>{card.cardNumber}</span>
+                                    </div>
+                                </td>
                                 <td className="border p-2">{card.type}</td>
                                 <td className="border p-2">{card.balance}</td>
                             </tr>
@@ -144,7 +153,14 @@ export default function MultiLevelList() {
                         {selectedCard.transactions.length > 0 ? selectedCard.transactions.map((transaction) => (
                             <tr key={transaction.id} className="border p-2">
                                 <td className="border p-2">{transaction.date}</td>
-                                <td className="border p-2">{transaction.code}</td>
+                                <td className="border p-2">
+                                    <div className={`flex items-center justify-start gap-2`}>
+                                        <button>
+                                            <BiDetail className="text-sky-700 text-lg"/>
+                                        </button>
+                                        <span className={`whitespace-nowrap`}>{transaction.code}</span>
+                                    </div>
+                                </td>
                                 <td className="border p-2">{transaction.amount}</td>
                                 <td className="border p-2">{transaction.description}</td>
                             </tr>

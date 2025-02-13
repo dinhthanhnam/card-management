@@ -1,20 +1,28 @@
+@import "@fontsource/signika";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 /* Định nghĩa các class tái sử dụng */
+@layer base {
+  html {
+    @apply font-sans text-base font-bold text-gray-700;
+  }
+}
 .container {
-  @apply mx-auto bg-white shadow-md shadow-purple-400 rounded-2xl p-layout border-2 border-fuchsia-300;
+  @apply mx-auto bg-white shadow-md shadow-primary rounded-2xl p-layout border-2 border-secondary;
 }
 
 .input-field {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none;
+  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none;
 }
 
 .button-primary {
-  @apply w-full bg-primary text-white font-semibold py-2 rounded-lg hover:bg-secondary transition duration-300;
+  @apply w-full bg-secondary text-white font-semibold py-2 rounded-lg hover:bg-primary transition duration-300;
 }
 
 .bg-gradient-purple {
-  @apply bg-gradient-to-br from-slate-50 to-purple-400;
+  @apply bg-gradient-to-br from-slate-50 to-sky-200;
 }
 

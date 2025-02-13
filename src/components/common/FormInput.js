@@ -8,7 +8,7 @@ export default function FormInput({ label, type = "text", name, value = "", disa
                 value={value}
                 onChange={onChange}
                 disabled={disabled}
-                className={`${className} w-full border border-gray-300 p-2 rounded-lg input-field `}
+                className={`!${className} w-full border border-gray-300 p-2 rounded-lg input-field `}
             />
         </div>
     );

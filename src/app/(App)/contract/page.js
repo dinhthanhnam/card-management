@@ -5,16 +5,26 @@ import FormInput from "@/components/common/FormInput";
 import {FormSelect} from "@/components/common/FormSelect";
 import CommonBottom from "@/components/common/CommonBottom";
 import CommonButton from "@/components/common/CommonBottom";
+import {BiDetail} from "react-icons/bi";
+import CommonModal from "@/components/common/CommonModal";
 
 export default function ContractPage() {
     const contractData = [
-        { contractNumber: "CT001", type: "Loan", bank: "Vietcombank", amount: 50000000, status: "approved", locked: false, term: "12 months",
+        { contractNumber: "CT001", type: "Loan", payment_network: "Visa", amount: 50000000, status: "approved", locked: false, term: "12 months",
             contractHolder: { id: 1, name: "Nguyễn Văn A", email: "a@gmail.com", phone: "0912312312", identityNumber: "09809123129837" },
+            linkedCards: [
+                {
+                    cardNumber: "1234 5678 9101 1121",
+                },
+                {
+                    cardNumber: "1234 5678 9101 2221",
+                }
+            ],
             associatedCustomer: { id: 1, name: "Nguyễn Văn A", email: "a@gmail.com"}
         },
-        { contractNumber: "CT002", type: "Mortgage", bank: "Techcombank", amount: 200000000, status: "approved", locked: true, term: "24 months" },
-        { contractNumber: "CT003", type: "Personal Loan", bank: "Vietinbank", amount: 75000000, status: "approved", locked: false, term: "18 months" },
-        { contractNumber: "CT004", type: "Auto Loan", bank: "BIDV", amount: 120000000, status: "approved", locked: true, term: "36 months" },
+        { contractNumber: "CT002", type: "Mortgage", payment_network: "Visa", amount: 200000000, status: "approved", locked: true, term: "24 months" },
+        { contractNumber: "CT003", type: "Personal Loan", payment_network: "Visa", amount: 75000000, status: "approved", locked: false, term: "18 months" },
+        { contractNumber: "CT004", type: "Auto Loan", payment_network: "JCB", amount: 120000000, status: "approved", locked: true, term: "36 months" },
     ];
 
 
@@ -47,23 +57,29 @@ export default function ContractPage() {
                 </div>
 
                 {/* Khối tìm kiếm */}
-                <div className={`overflow-hidden transition-all duration-300 mt-4 p-4 border-t border-gray-300 bg-gray-50 rounded-b-md`}>
+                <div className={`overflow-hidden transition-all duration-300 mt-4 p-4 border-t border-gray-300 bg-gray-50 rounded-b-md grid grid-cols-2 gap-4`}>
                     <FormInput
                         label="Nhập mã hợp đồng hoặc căn cước công dân"
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
                     />
+                    <FormSelect
+                        label="Loại hợp đồng"
+                        name="type"
+                        options={["LOAN", "CREDITCARD", "MORTGAGE"]}
+                        value={searchType}
+                        onChange={(e) => setSearchType(e.target.value)}
+                    />
                 </div>
             </div>
             <div className={`flex flex-row gap-2 mt-2`}>
-                <div className="container">
+                <div className="container h-full">
                     <h2 className="text-lg font-bold text-gray-600 mb-2">Kết quả tìm kiếm</h2>
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                         <tr className="bg-gray-100">
                             <th className="border p-2">Mã hợp đồng</th>
                             <th className="border p-2">Loại hợp đồng</th>
-                            <th className="border p-2">Ngân hàng</th>
                             <th className="border p-2">Action</th>
                         </tr>
                         </thead>
@@ -71,17 +87,23 @@ export default function ContractPage() {
                         {filteredContracts.length > 0 ? (
                             filteredContracts.map((contract) => (
                                 <tr key={contract.contractNumber}
-                                    className={`cursor-pointer hover:bg-fuchsia-100 ${selectedContract?.contractNumber === contract.contractNumber && !seeContractRelation ? "bg-fuchsia-300" : ""}`}
-                                    onClick={() => {
-                                        setSelectedContract(contract);
-                                        setModal(true);
-                                    }}
+                                    className={`cursor-pointer hover:bg-gray-100 
+                                    ${selectedContract?.contractNumber === contract.contractNumber && !seeContractRelation ? "bg-gray-300" : ""}`}
                                 >
-                                    <td className="border p-2">{contract.contractNumber}</td>
+                                    <td className="border p-2">
+                                        <div className="flex items-center justify-center gap-2">
+                                            <button onClick={() => {
+                                                setSelectedContract(contract);
+                                                setModal(true);
+                                            }}>
+                                                <BiDetail className="text-sky-700 text-lg"/>
+                                            </button>
+                                            <span>{contract.contractNumber}</span>
+                                        </div>
+                                    </td>
                                     <td className="border p-2">{contract.type}</td>
-                                    <td className="border p-2">{contract.bank}</td>
                                     <th className="border">
-                                        <div className={`flex items-center justify-center gap-4`}>
+                                    <div className={`flex items-center justify-center gap-4`}>
                                             <button
                                                 className={`hover:bg-gray-300 text-gray-600 rounded-full duration-100 p-1`}
                                                 onClick={(e) => {
@@ -117,32 +139,56 @@ export default function ContractPage() {
                 </div>
                 {seeContractRelation && selectedContract && (
                     <div className="container w-2/3 relative h-full">
+                        {/* Close Button */}
                         <button
                             onClick={() => setSeeContractRelation(false)}
-                            className="absolute top-4 right-4 rounded-full hover:bg-gray-200"
+                            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200"
                         >
-                            <X className="cursor-pointer w-6 h-6"/>
+                            <X className="cursor-pointer w-6 h-6" />
                         </button>
-                        <div>
-                            <h2 className="text-xl font-bold">Liên kết khách hàng</h2>
-                        </div>
-                        <table className="w-full border-collapse border my-3 border-gray-300">
+
+                        {/* Title */}
+                        <h2 className="text-xl font-bold mb-4">Quan hệ</h2>
+
+                        {/* Table */}
+                        <table className="w-full border border-gray-300">
                             <thead>
                             <tr className="bg-gray-100">
-                                <th className="border p-2">Khách hàng</th>
+                                <th className="border p-3">Khách hàng</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {selectedContract.associatedCustomer ? (
-                                <tr key={selectedContract.contractNumber}
-                                    className={`cursor-pointer hover:bg-gray-100`}>
-                                    <td className="border p-2">{selectedContract.associatedCustomer.name} | {selectedContract.associatedCustomer.email}</td>
+                            {/* Hiển thị khách hàng liên kết */}
+                            {selectedContract?.associatedCustomer ? (
+                                <tr className="hover:bg-gray-100">
+                                    <td className="border p-3">
+                                        {selectedContract.associatedCustomer.name}
+                                    </td>
                                 </tr>
                             ) : (
                                 <tr>
-                                    <td colSpan="5" className="border p-2 text-center">
-                                        <p>Hợp đồng này chưa được liên kết</p>
-                                        <CommonButton>Liên kết hợp đồng</CommonButton>
+                                    <td className="border p-3 text-center">
+                                        <p className="text-gray-500">Hợp đồng này chưa được liên kết</p>
+                                        <CommonButton>Liên kết khách hàng</CommonButton>
+                                    </td>
+                                </tr>
+                            )}
+
+                            {/* Hiển thị thẻ liên kết */}
+                            <tr className="bg-gray-100">
+                                <th className="border p-3">Thẻ liên kết</th>
+                            </tr>
+                            {selectedContract?.linkedCards?.length ? (
+                                selectedContract.linkedCards.map((card) => (
+                                    <tr key={card.cardNumber} className="hover:bg-gray-100">
+                                        <td className="border p-3">{card.cardNumber}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td className="border p-3 text-center">
+                                        <p className="text-gray-500">Hợp đồng này chưa được liên kết thẻ</p>
+                                        <CommonButton>Liên kết thẻ</CommonButton>
                                     </td>
                                 </tr>
                             )}
@@ -151,30 +197,33 @@ export default function ContractPage() {
                     </div>
                 )}
 
+
             </div>
             {modal && selectedContract && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-xl font-bold">Thông tin hợp đồng</h2>
-                        <p><strong>Mã hợp đồng:</strong> {selectedContract.contractNumber}</p>
-                        <p><strong>Loại:</strong> {selectedContract.type}</p>
-                        <p><strong>Ngân hàng:</strong> {selectedContract.bank}</p>
-                        <p><strong>Thời hạn:</strong> {selectedContract.term}</p>
-                        {selectedContract.contractHolder ? (
-                            <>
-                                <h2 className="text-xl font-bold">Thông tin Contract Holder</h2>
-                                <p><strong>Tên:</strong> {selectedContract.contractHolder.name}</p>
-                                <p><strong>Số CMND/CCCD:</strong> {selectedContract.contractHolder.identityNumber}</p>
-                            </>
-                        ) : (
-                            <p className="text-red-500">Không có thông tin Contract Holder</p>
-                        )}
-
-                        <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-                                onClick={() => setModal(false)}>Đóng
-                        </button>
+                <CommonModal onClose={() => {
+                    setModal(false);
+                    setSelectedContract(null);
+                }}>
+                    <div className={`p-layout`}>
+                        <div>
+                            <h2 className="text-xl font-bold mb-4">Chi tiết hợp đồng</h2>
+                        </div>
+                        <div className={`grid gap-4 grid-cols-4`}>
+                            <FormInput label="Mã hợp đồng" value={selectedContract.contractNumber} disabled/>
+                            <FormInput label="Loại" value={selectedContract.type} disabled/>
+                            <FormInput label="Giá trị" value={selectedContract.amount} disabled/>
+                            <FormInput label="Thời hạn" value={selectedContract.term} disabled/>
+                            <FormInput label="Trạng thái" value={selectedContract.status} disabled/>
+                        </div>
+                        <div className={`grid gap-4 grid-cols-2`}>
+                            <CommonBottom>Sửa</CommonBottom>
+                            <CommonBottom>Lưu</CommonBottom>
+                        </div>
                     </div>
-                </div>
+                    <div>
+
+                    </div>
+                </CommonModal>
             )}
             {/*{isLimitModalOpen && selectedcontract && (*/}
             {/*    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">*/}
