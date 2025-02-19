@@ -1,6 +1,6 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import OpenwayLogo from "@/components/static/OpenwayLogo";
 import CommonBottom from "@/components/common/CommonBottom";
 import FormInput from "@/components/common/FormInput";
@@ -16,7 +16,7 @@ export default function LoginPage() {
         e.preventDefault();
         const userData = await login(email, password);
         if (userData) {
-            router.push("/dashboard"); // Chuyển hướng nếu đăng nhập thành công
+            router.push("/client"); // Chuyển hướng nếu đăng nhập thành công
         } else {
             setError("Sai tài khoản hoặc mật khẩu");
         }

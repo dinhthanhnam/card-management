@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import FormInput from "@/components/common/FormInput";
 import CommonBottom from "@/components/common/CommonBottom";
 
-export default function CommonModal({ onClose, subject, data}) {
+export default function ReadModal({ onClose, subject, data}) {
     const modalRef = useRef();
 
     useEffect(() => {

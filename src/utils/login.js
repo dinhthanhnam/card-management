@@ -1,25 +1,14 @@
-import { API_ENDPOINTS } from "@/constants/ApiEndpoints";
+import api from "@/utils/axiosinstance";
 
 export const login = async (email, password) => {
     try {
-        const res = await fetch(API_ENDPOINTS.AUTHENTICATE, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        });
+        const res = await api.post("/auth/authenticate", { email, password });
 
-        if (!res.ok) {
-            console.error("Login failed:", res.status);
-            return null;
-        }
+        res.data.token && localStorage.setItem("jwt", res.data.token);
 
-        const data = await res.json();
-        localStorage.setItem("jwt", data.token); // Lưu token vào localStorage
-        return data;
+        return res.data;
     } catch (error) {
-        console.error("Error during login:", error);
+        console.error("Login failed:", error.response?.data || error.message);
         return null;
     }
 };

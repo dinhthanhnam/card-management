@@ -1,17 +1,17 @@
-import axios from "axios";
-import { API_ENDPOINTS } from "@/constants/ApiEndpoints";
+import api from "@/utils/axiosinstance";
 
-export const fetchContract = async (id = null, token) => {
+export const fetchContract = async (id = null) => {
     try {
-        const url = id ? `${API_ENDPOINTS.CLIENTS}/${id}` : API_ENDPOINTS.CLIENTS;
-        const res = await axios.get(url, {
+        const token = localStorage.getItem("jwt");
+        const url = id ? `/contracts/${id}` : `/contracts`;
+        const res = await api.get(url, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
         return res.data;
     } catch (error) {
-        console.error("Error fetching client:", error);
+        console.error("Error fetching contract:", error);
         throw error;
     }
 };

@@ -1,33 +1,34 @@
 "use client";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import {Search, Filter, LockIcon, LockKeyhole, LockKeyholeOpen, DollarSign, ListCollapse, X} from "lucide-react";
 import FormInput from "@/components/common/FormInput";
 import { FormSelect } from "@/components/common/FormSelect";
 import { BiDetail } from "react-icons/bi";
+import SearchBar from "@/components/common/SearchBar";
+import {fetchClient} from "@/utils/fetchclient";
+import {fetchCard} from "@/utils/fetchcard";
 
 export default function CardPage() {
-    const cardData = [
-        { cardNumber: "1234 5678 9101 1121", type: "Visa", paymentNetwork: "Visa", balance: 10000000, locked: false, limit: 20000000,
-            cardholder:
-                {
-                    id: 1,
-                    name: "Nguyễn Văn A",
-                    email: "a@gmail.com",}
-        },
-        { cardNumber: "1111 2222 3333 4444", type: "MasterCard", paymentNetwork: "Visa", balance: 5000000, locked: false, limit: 2000000 },
-        { cardNumber: "5555 6666 7777 8888", type: "Visa", paymentNetwork: "Visa", balance: 12000000, locked: true, limit: 200000},
-        { cardNumber: "9999 0000 1111 2222", type: "JCB", paymentNetwork: "Visa", balance: 8000000, locked: true, limit: 1000000 },
-    ];
-
     const [searchType, setSearchType] = useState(null);
     const [searchText, setSearchText] = useState("");
-    const [filter, setFilter] = useState({
+    const [searchParams, setSearchParams] = useState({
         cardNumber: "",
-        type: "",
-        minBalance: "",
-        maxBalance: "",
+        cardType: "",
+        contractNumber: "",
     });
     const [lockedCards, setLockedCards] = useState({});
+    const [cardsData, setCardsData] = useState({});
+
+    useEffect(() => {
+        const fetchCards = async() => {
+            try {
+                setCardsData(await fetchCard(null));
+            } catch (error) {
+                console.error("Error fetching cards:", error);
+            }
+        }
+        fetchCards();
+    }, []);
 
     const toggleLock = (cardNumber) => {
         setLockedCards((prev) => ({
@@ -41,21 +42,6 @@ export default function CardPage() {
 
     const [seeCardRelation, setSeeCardRelation] = useState(false);
 
-
-    const filteredCards = cardData.filter((card) => {
-        if (searchType === "simple") {
-            return card.cardNumber.includes(searchText) || card.type.toLowerCase().includes(searchText.toLowerCase());
-        } else if (searchType === "advanced") {
-            return (
-                (filter.cardNumber === "" || card.cardNumber.includes(filter.cardNumber)) &&
-                (filter.type === "" || card.type === filter.type) &&
-                (filter.bank === "" || card.bank === filter.bank) &&
-                (filter.minBalance === "" || card.balance >= parseInt(filter.minBalance)) &&
-                (filter.maxBalance === "" || card.balance <= parseInt(filter.maxBalance))
-            );
-        }
-        return true;
-    });
 
     return (
         <div className="p-2">
@@ -90,42 +76,42 @@ export default function CardPage() {
                     searchType ? "mt-4 p-4 border-t border-gray-300 bg-gray-50 rounded-b-md" : "h-0"
                 }`}>
                     {searchType === "simple" && (
-                        <FormInput
-                            label="Nhập số thẻ hoặc loại thẻ"
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
-                        />
+                        <>
+                            <label className="block text-gray-700 font-medium mb-1">Tìm theo số thẻ hoặc chủ thẻ</label>
+                            <SearchBar
+                                value={searchParams.cardNumber}
+                                onSearch={() =>{}}
+                                onChange={(e) => setSearchParams({ ...searchParams, cardNumber: e.target.value })}
+                            />
+                        </>
                     )}
 
                     {searchType === "advanced" && (
                         <div className="grid grid-cols-2 gap-4">
                             <FormInput
-                                label="Số thẻ"
-                                name="cardNumber"
-                                value={filter.cardNumber}
-                                onChange={(e) => setFilter({ ...filter, cardNumber: e.target.value })}
+                                label="Mã hợp đồng"
+                                name="contractNumber"
+                                value={searchParams.contractNumber}
+                                onChange={(e) => setSearchParams({ ...searchParams, contractNumber: e.target.value })}
                             />
                             <FormSelect
                                 label="Loại thẻ"
                                 name="type"
                                 options={["Visa", "MasterCard", "JCB"]}
-                                value={filter.type}
-                                onChange={(e) => setFilter({ ...filter, type: e.target.value })}
+                                value={searchParams.cardType}
+                                onChange={(e) => setSearchParams({ ...searchParams, type: e.target.value })}
                             />
-                            <FormInput
-                                label="Số dư từ"
-                                type="number"
-                                name="minBalance"
-                                value={filter.minBalance}
-                                onChange={(e) => setFilter({ ...filter, minBalance: e.target.value })}
-                            />
-                            <FormInput
-                                label="Số dư đến"
-                                type="number"
-                                name="maxBalance"
-                                value={filter.maxBalance}
-                                onChange={(e) => setFilter({ ...filter, maxBalance: e.target.value })}
-                            />
+                            <div className={`col-span-2`}>
+                                <label className="block text-gray-700 font-medium mb-1">Tìm theo số thẻ hoặc chủ
+                                    thẻ</label>
+                                <SearchBar
+                                    value={searchParams.cardNumber}
+                                    onChange={(e) => setsearchParams({ ...searchParams, cardNumber: e.target.value })}
+                                    onSearch={() => {
+                                    }}
+                                />
+                            </div>
+
                         </div>
                     )}
                 </div>
@@ -138,14 +124,14 @@ export default function CardPage() {
                         <tr className="bg-gray-100">
                             <th className="border p-2">Số thẻ</th>
                             <th className="border p-2">Loại thẻ</th>
-                            <th className="border p-2">Payment Network</th>
+                            <th className="border p-2">Hệ thống thanh toán</th>
                             <th className="border p-2">Số dư</th>
                             <th className="border p-2">Hành động</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {filteredCards.length > 0 ? (
-                            filteredCards.map((card) => (
+                        {cardsData.length > 0 ? (
+                            cardsData.map((card) => (
                                 <tr key={card.cardNumber} className="hover:bg-gray-100 cursor-pointer">
                                     <td className="border p-2 w-1/3">
                                         <div className="flex items-center justify-center gap-2">
@@ -153,9 +139,9 @@ export default function CardPage() {
                                             <span>{card.cardNumber}</span>
                                         </div>
                                     </td>
-                                    <td className="border p-2">{card.type}</td>
-                                    <td className="border p-2">{card.paymentNetwork}</td>
-                                    <td className="border p-1">{card.balance.toLocaleString()} VND</td>
+                                    <td className="border p-2">{card.cardType}</td>
+                                    <td className="border p-2">{card.cardScope}</td>
+                                    <td className="border p-1">{card.cardBalance}</td>
                                     <th className="border">
                                         <div className={`flex items-center justify-center gap-4`}>
                                             <button
@@ -181,7 +167,7 @@ export default function CardPage() {
                                                     setSelectedCard(card);
                                                     setSeeCardRelation(true);
                                                 }}>
-                                                <ListCollapse size={`20`}/>
+                                                <ListCollapse size={20}/>
                                             </button>
                                         </div>
                                     </th>
@@ -196,38 +182,38 @@ export default function CardPage() {
                         </tbody>
                     </table>
                 </div>
-                {seeCardRelation && selectedCard && (
-                    <div className="container w-2/3 relative h-full">
-                        <button
-                            onClick={() => setSeeCardRelation(false)}
-                            className="absolute top-4 right-4 rounded-full hover:bg-gray-200"
-                        >
-                            <X className="cursor-pointer w-6 h-6"/>
-                        </button>
-                        <div>
-                            <h2 className="text-xl font-bold">Quan hệ</h2>
-                        </div>
-                        <table className="w-full border-collapse border my-3 border-gray-300">
-                            <thead>
-                            <tr className="bg-gray-100">
-                                <th className="border p-2">Chủ thẻ</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {selectedCard.cardholder ? (
-                                <tr key={selectedCard.cardNumber}
-                                    className={`cursor-pointer hover:bg-gray-100`}>
-                                    <td className="border p-2">{selectedCard.cardholder.name} | {selectedCard.cardholder.email}</td>
-                                </tr>
-                            ) : (
-                                <tr>
-                                    <td colSpan="5" className="border p-2 text-center">Không có quan hệ chủ thẻ</td>
-                                </tr>
-                            )}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                {/*{seeCardRelation && selectedCard && (*/}
+                {/*    <div className="container w-2/3 relative h-full">*/}
+                {/*        <button*/}
+                {/*            onClick={() => setSeeCardRelation(false)}*/}
+                {/*            className="absolute top-4 right-4 rounded-full hover:bg-gray-200"*/}
+                {/*        >*/}
+                {/*            <X className="cursor-pointer w-6 h-6"/>*/}
+                {/*        </button>*/}
+                {/*        <div>*/}
+                {/*            <h2 className="text-xl font-bold">Quan hệ</h2>*/}
+                {/*        </div>*/}
+                {/*        <table className="w-full border-collapse border my-3 border-gray-300">*/}
+                {/*            <thead>*/}
+                {/*            <tr className="bg-gray-100">*/}
+                {/*                <th className="border p-2">Chủ thẻ</th>*/}
+                {/*            </tr>*/}
+                {/*            </thead>*/}
+                {/*            <tbody>*/}
+                {/*            {selectedCard.cardholder ? (*/}
+                {/*                <tr key={selectedCard.cardNumber}*/}
+                {/*                    className={`cursor-pointer hover:bg-gray-100 text-center`}>*/}
+                {/*                    <td className="border p-2">{selectedCard.cardholder.name} | {selectedCard.cardholder.email}</td>*/}
+                {/*                </tr>*/}
+                {/*            ) : (*/}
+                {/*                <tr>*/}
+                {/*                    <td colSpan="5" className="border p-2 text-center">Không có quan hệ chủ thẻ</td>*/}
+                {/*                </tr>*/}
+                {/*            )}*/}
+                {/*            </tbody>*/}
+                {/*        </table>*/}
+                {/*    </div>*/}
+                {/*)}*/}
 
             </div>
 

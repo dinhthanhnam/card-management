@@ -49,7 +49,7 @@ export default function AppLayout({ children }) {
             {/* Main Content */}
             <div className="flex flex-col w-full">
                 <div className={`flex flex-row`}>
-                    <div className="md:hidden border-b-2 border-fuchsia-300 content-center">
+                    <div className="md:hidden border-b-2 border-secondary bg-sky-100 content-center">
                         <IconHolder>
                             <MenuIcon
                                 className="w-5 h-5 text-gray-500 cursor-pointer"
@@ -65,7 +65,17 @@ export default function AppLayout({ children }) {
                                     <ChevronRight className="w-5 h-5 text-gray-500"/>
                                 </ChevronHolder>
                                 <IconHolder active={pathname ==="/client"} onClick={() => router.push("/cardholder")}>
-                                    <p className="text-sm text-gray-600">Danh sách chủ thẻ</p>
+                                    <p className="text-sm text-gray-600">Danh sách khách hàng</p>
+                                </IconHolder>
+                            </>
+                        )}
+                        {pathname === "/contract" && (
+                            <>
+                                <ChevronHolder>
+                                    <ChevronRight className="w-5 h-5 text-gray-500"/>
+                                </ChevronHolder>
+                                <IconHolder active={pathname ==="/contract"} onClick={() => router.push("/transaction")}>
+                                    <p className="text-sm text-gray-600">Danh sách hợp đồng</p>
                                 </IconHolder>
                             </>
                         )}

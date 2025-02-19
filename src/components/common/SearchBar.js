@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-export default function SearchBar({ value, onChange, onSearch, placeholder = "Tìm kiếm..." }) {
+export default function SearchBar({ value, onChange, onSearch, placeholder = "Tìm kiếm..."}) {
     return (
         <div className="flex flex-row items-center space-x-2">
             <input

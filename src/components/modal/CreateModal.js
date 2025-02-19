@@ -1,10 +1,36 @@
 import { X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import {useEffect, useRef, useState} from "react";
 import FormInput from "@/components/common/FormInput";
 import CommonBottom from "@/components/common/CommonBottom";
 
-export default function ReadModal({ onClose, subject, data}) {
+export default function CreateModal({ onClose, subject}) {
     const modalRef = useRef();
+    const [createParams, setCreateParams] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        identityNumber: "",
+        dateOfBirth: "", // Nếu dùng Date, có thể để null hoặc new Date()
+        address: {
+            street: "",
+            city: "",
+            state: "",
+            postalCode: "",
+            country: ""
+        },
+        reasonCode: "",
+        reason: "",
+        clientTypeCode: "",
+        institutionCode: "",
+        branch: "",
+        clientCategory: "",
+        productCategory: "",
+        companyName: "",
+        shortName: "",
+        clientNumber: ""
+    });
+
 
     useEffect(() => {
         // Close the modal when clicking outside of it
@@ -38,55 +64,37 @@ export default function ReadModal({ onClose, subject, data}) {
                 </button>
 
                 <div className={`p-layout`}>
-                    {subject === "clients" && data && (
+                    {subject === "clients" && (
                         <div>
                             <div>
-                                <h2 className="text-xl font-bold mb-4">Chi tiết khách hàng</h2>
+                                <h2 className="text-xl font-bold mb-4">Thêm khách hàng</h2>
                             </div>
                             <div className={`grid gap-4 grid-cols-4`}>
-                                <FormInput label="Họ tên" value={data.firstName} disabled/>
-                                <FormInput label="Email" value={data.email} disabled/>
-                                <FormInput label="Số điện thoại" value={data.phone} disabled/>
-                                <FormInput label="Năm sinh" value={data.dateOfBirth} disabled/>
-                                <FormInput label="Thành phố" value={data.address?.city} disabled/>
-                                <FormInput label="Đường" value={data.address?.street} disabled/>
-                                <FormInput label="Quốc gia" value={data.address?.country} disabled/>
-                            </div>
-                        </div>
-                    )}
-                    {subject === "contracts" && data && (
-                        <div>
-                            <div>
-                                <h2 className="text-xl font-bold mb-4">Chi tiết hợp đồng</h2>
-                            </div>
-                            <div className={`grid gap-4 grid-cols-4`}>
-                                <FormInput label="Mã hợp đồng" value={data.contractNumber} disabled/>
-                                <FormInput label="Loại hợp đồng" value={data.contractType} disabled/>
-                                <FormInput label="Trạng thái" value={data.status || ""} disabled/>
-                            </div>
-                        </div>
-                    )}
-                    {subject === "cards" && data && (
-                        <div>
-                            <div>
-                                <h2 className="text-xl font-bold mb-4">Thông tin thẻ</h2>
-                            </div>
-                            <div className={`grid gap-4 grid-cols-4`}>
-                                <FormInput label="Số thẻ" value={data.cardNumber} disabled/>
-                                <FormInput label="Loại thẻ" value={data.cardType} disabled/>
-                                <FormInput label="Trạng thái thẻ" value={data.cardStatus} disabled/>
-                                <FormInput label="PS" value={data.cardScope} disabled/>
-                                <FormInput label="Số dư" value={data.cardBalance} disabled/>
-                                <FormInput label="Hạn mức" value={data.cardLimit} disabled/>
-                                <FormInput label="Ngày hết hạn" value={data.expireAt} disabled/>
-                                <FormInput label="Số thẻ cũ" value={data.previousCard || ""} disabled/>
+                                <FormInput label="Họ" value={createParams.firstName} onChange={(e) => setCreateParams({...createParams, firstName: e.target.value})} />
+                                <FormInput label="Tên" value={createParams.lastName} onChange={(e) => setCreateParams({...createParams, lastName: e.target.value})} />
+                                <FormInput label="Email" value={createParams.email} onChange={(e) => setCreateParams({...createParams, email: e.target.value})} />
+                                <FormInput label="Số điện thoại" value={createParams.phone} onChange={(e) => setCreateParams({...createParams, phone: e.target.value})} />
+                                <FormInput label="Số định danh" value={createParams.identityNumber} onChange={(e) => setCreateParams({...createParams, identityNumber: e.target.value})} />
+                                <FormInput label="Năm sinh" value={createParams.dateOfBirth} onChange={(e) => setCreateParams({...createParams, dateOfBirth: e.target.value})} />
+                                <FormInput label="Thành phố" value={createParams.address.city} onChange={(e) => setCreateParams({...createParams, address: {...createParams.address, city: e.target.value}})} />
+                                <FormInput label="Đường" value={createParams.address.street} onChange={(e) => setCreateParams({...createParams, address: {...createParams.address, street: e.target.value}})} />
+                                <FormInput label="Quốc gia" value={createParams.address.country} onChange={(e) => setCreateParams({...createParams, address: {...createParams.address, country: e.target.value}})} />
+                                <FormInput label="Mã lý do" value={createParams.reasonCode} onChange={(e) => setCreateParams({...createParams, reasonCode: e.target.value})} />
+                                <FormInput label="Lý do" value={createParams.reason} onChange={(e) => setCreateParams({...createParams, reason: e.target.value})} />
+                                <FormInput label="Mã loại khách hàng" value={createParams.clientTypeCode} onChange={(e) => setCreateParams({...createParams, clientTypeCode: e.target.value})} />
+                                <FormInput label="Mã tổ chức" value={createParams.institutionCode} onChange={(e) => setCreateParams({...createParams, institutionCode: e.target.value})} />
+                                <FormInput label="Chi nhánh" value={createParams.branch} onChange={(e) => setCreateParams({...createParams, branch: e.target.value})} />
+                                <FormInput label="Loại khách hàng" value={createParams.clientCategory} onChange={(e) => setCreateParams({...createParams, clientCategory: e.target.value})} />
+                                <FormInput label="Danh mục sản phẩm" value={createParams.productCategory} onChange={(e) => setCreateParams({...createParams, productCategory: e.target.value})} />
+                                <FormInput label="Tên công ty" value={createParams.companyName} onChange={(e) => setCreateParams({...createParams, companyName: e.target.value})} />
+                                <FormInput label="Tên viết tắt" value={createParams.shortName} onChange={(e) => setCreateParams({...createParams, shortName: e.target.value})} />
+                                <FormInput label="Mã khách hàng" value={createParams.clientNumber} onChange={(e) => setCreateParams({...createParams, clientNumber: e.target.value})} />
                             </div>
                         </div>
                     )}
 
-                    <div className={`flex flex-row justify-between`}>
-                        <CommonBottom>Sửa</CommonBottom>
-                        <CommonBottom>Lưu</CommonBottom>
+                    <div className={`flex flex-row-reverse justify-between`}>
+                        <CommonBottom className={`w-40`}>Thêm</CommonBottom>
                     </div>
                 </div>
                 <div>
