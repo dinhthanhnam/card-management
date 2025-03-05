@@ -3,13 +3,7 @@ import api from "@/utils/axiosinstance";
 
 export const modalrequest = async (subject, id) => {
   try {
-    const token = localStorage.getItem("jwt"); // Lấy token từ localStorage
-
-    const res = await api.get(`/${subject}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`, // Chèn JWT vào header
-      },
-    });
+    const res = await api.get(`/${subject}/${id}`);
 
     return res.data;
   } catch (error) {

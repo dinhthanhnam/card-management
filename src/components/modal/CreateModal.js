@@ -94,7 +94,7 @@ export default function CreateModal({ onClose, subject}) {
                     )}
 
                     <div className={`flex flex-row-reverse justify-between`}>
-                        <CommonBottom className={`w-40`}>Thêm</CommonBottom>
+                        <CommonBottom className={`w-40`} onClick={() =>createClient()}>Thêm</CommonBottom>
                     </div>
                 </div>
                 <div>

@@ -1,16 +1,13 @@
 import api from "@/utils/axiosinstance";
 
-export const fetchClientContracts = async (clientId) => {
+export const fetchClientContracts = async (clientId, page = 0, size = 10) => {
     try {
-        const token = localStorage.getItem("jwt");
         const res = await api.get(`/contracts/client/${clientId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+            params: { page, size },
         });
-        return res.data;
+        return res.data; // { content: [], totalPages: number, ... }
     } catch (error) {
-        console.error("Error fetching client contracts:", error);
+        console.error("Error fetching client contracts:", error.response?.data || error.message);
         throw error;
     }
 };

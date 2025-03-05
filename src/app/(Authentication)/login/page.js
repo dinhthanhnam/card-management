@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import OpenwayLogo from "@/components/static/OpenwayLogo";
 import CommonBottom from "@/components/common/CommonBottom";
 import FormInput from "@/components/common/FormInput";
@@ -11,16 +11,29 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const pathname = usePathname();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const userData = await login(email, password);
         if (userData) {
-            router.push("/client"); // Chuyển hướng nếu đăng nhập thành công
+            window.location.href = "/client"; // Chuyển hướng nếu đăng nhập thành công
         } else {
             setError("Sai tài khoản hoặc mật khẩu");
         }
     };
+
+    useEffect( () =>
+        {
+            const checkAuth = async () => {
+                const token = localStorage.getItem("accessToken");
+
+                if (token && pathname === "/login") {
+                    router.push("/login");
+                }
+            }
+        }
+    )
 
     return (
         <div className="flex flex-col min-h-screen">
