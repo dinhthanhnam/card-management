@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Search, Filter, LockIcon, LockKeyhole, LockKeyholeOpen, DollarSign, ListCollapse, X} from "lucide-react";
 import FormInput from "@/components/common/FormInput";
 import { FormSelect } from "@/components/common/FormSelect";
@@ -7,6 +7,8 @@ import { BiDetail } from "react-icons/bi";
 import SearchBar from "@/components/common/SearchBar";
 import {fetchClient} from "@/utils/fetchclient";
 import {fetchCard} from "@/utils/fetchcard";
+import CommonButton from "@/components/common/CommonBottom";
+import CreateModal from "@/components/modal/CreateModal";
 
 export default function CardPage() {
     const [searchType, setSearchType] = useState(null);
@@ -18,17 +20,18 @@ export default function CardPage() {
     });
     const [lockedCards, setLockedCards] = useState({});
     const [cardsData, setCardsData] = useState({});
+    const [createModal, setCreateModal] = useState(false);
 
-    useEffect(() => {
-        const fetchCards = async() => {
-            try {
-                setCardsData(await fetchCard(null));
-            } catch (error) {
-                console.error("Error fetching cards:", error);
-            }
-        }
-        fetchCards();
-    }, []);
+    // useEffect(() => {
+    //     const fetchCards = async() => {
+    //         try {
+    //             setCardsData(await fetchCard(null));
+    //         } catch (error) {
+    //             console.error("Error fetching cards:", error);
+    //         }
+    //     }
+    //     fetchCards();
+    // }, []);
 
     const toggleLock = (cardNumber) => {
         setLockedCards((prev) => ({
@@ -106,7 +109,7 @@ export default function CardPage() {
                                     thẻ</label>
                                 <SearchBar
                                     value={searchParams.cardNumber}
-                                    onChange={(e) => setsearchParams({ ...searchParams, cardNumber: e.target.value })}
+                                    onChange={(e) => setSearchParams({ ...searchParams, cardNumber: e.target.value })}
                                     onSearch={() => {
                                     }}
                                 />
@@ -114,6 +117,15 @@ export default function CardPage() {
 
                         </div>
                     )}
+                </div>
+            </div>
+            <div className={`container flex flex-row-reverse gap-2 mt-2`}>
+                <div>
+                    <CommonButton className={`px-2 mx-2`}
+                                  onClick={() => setCreateModal(true)}
+                    >
+                        Create Card
+                    </CommonButton>
                 </div>
             </div>
             <div className={`flex flex-row gap-2 mt-2`}>
@@ -246,7 +258,13 @@ export default function CardPage() {
                     </div>
                 </div>
             )}
-
+            {createModal && (
+                <CreateModal
+                    onClose={() => setCreateModal(false)}
+                    subject={"cards"}
+                />
+            )}
         </div>
+
     );
 }

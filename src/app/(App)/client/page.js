@@ -63,33 +63,33 @@ export default function ClientPage() {
         }
     };
 
-    useEffect(() => {
-        const fetchClients = async () => {
-            try {
-                const data = await fetchClient(currentPageClients, clientsPerPage);
-                setClientsData(data.content);
-                setTotalPagesClients(data.totalPages);
-            } catch (error) {
-                console.error("Error fetching clients:", error);
-            }
-        };
-        fetchClients();
-    }, [currentPageClients]);
-
-    useEffect(() => {
-        if (selectedClient) {
-            const fetchContracts = async () => {
-                try {
-                    const data = await fetchClientContracts(selectedClient.id, currentPageContracts, contractsPerPage);
-                    setContractsData(data.content);
-                    setTotalPagesContracts(data.totalPages);
-                } catch (error) {
-                    console.error("Failed to fetch contracts", error);
-                }
-            };
-            fetchContracts();
-        }
-    }, [selectedClient, currentPageContracts]);
+    // useEffect(() => {
+    //     const fetchClients = async () => {
+    //         try {
+    //             const data = await fetchClient(currentPageClients, clientsPerPage);
+    //             setClientsData(data.content);
+    //             setTotalPagesClients(data.totalPages);
+    //         } catch (error) {
+    //             console.error("Error fetching clients:", error);
+    //         }
+    //     };
+    //     fetchClients();
+    // }, [currentPageClients]);
+    //
+    // useEffect(() => {
+    //     if (selectedClient) {
+    //         const fetchContracts = async () => {
+    //             try {
+    //                 const data = await fetchClientContracts(selectedClient.id, currentPageContracts, contractsPerPage);
+    //                 setContractsData(data.content);
+    //                 setTotalPagesContracts(data.totalPages);
+    //             } catch (error) {
+    //                 console.error("Failed to fetch contracts", error);
+    //             }
+    //         };
+    //         fetchContracts();
+    //     }
+    // }, [selectedClient, currentPageContracts]);
 
     const handlePageChangeClients = (newPage) => {
         if (newPage >= 0 && newPage < totalPagesClients) {

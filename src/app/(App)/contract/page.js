@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, LockKeyhole, LockKeyholeOpen, ListCollapse, X } from "lucide-react";
 import FormInput from "@/components/common/FormInput";
 import { FormSelect } from "@/components/common/FormSelect";
@@ -9,6 +9,7 @@ import ReadModal from "@/components/modal/ReadModal";
 import { modalrequest } from "@/utils/modalrequest";
 import { fetchContract } from "@/utils/fetchcontract";
 import SearchBar from "@/components/common/SearchBar";
+import CreateModal from "@/components/modal/CreateModal";
 
 export default function ContractPage() {
     const [searchType, setSearchType] = useState("");
@@ -17,12 +18,14 @@ export default function ContractPage() {
     const [seeContractRelation, setSeeContractRelation] = useState(false);
     const [selectedContract, setSelectedContract] = useState(null);
     const [modal, setModal] = useState(false);
+    const [createModal, setCreateModal] = useState(false);
     const [contractsData, setContractsData] = useState([]); // Đổi từ {} thành [] để phù hợp với content
     const [modalData, setModalData] = useState({});
     const [toggleSearch, setToggleSearch] = useState(false);
     const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
     const [totalPages, setTotalPages] = useState(0); // Tổng số trang
     const contractsPerPage = 10; // Số hợp đồng mỗi trang
+    const [subject, setSubject] = useState("");
 
     const toggleLock = (contractNumber) => {
         setLockedContracts((prev) => ({
@@ -35,18 +38,18 @@ export default function ContractPage() {
         setToggleSearch(true);
     };
 
-    useEffect(() => {
-        const fetchContracts = async () => {
-            try {
-                const data = await fetchContract(null, currentPage, contractsPerPage);
-                setContractsData(data.content); // Lấy danh sách hợp đồng từ content
-                setTotalPages(data.totalPages); // Lấy tổng số trang
-            } catch (error) {
-                console.error("Error fetching contracts:", error);
-            }
-        };
-        fetchContracts();
-    }, [currentPage]); // Gọi lại khi currentPage thay đổi
+    // useEffect(() => {
+    //     const fetchContracts = async () => {
+    //         try {
+    //             const data = await fetchContract(null, currentPage, contractsPerPage);
+    //             setContractsData(data.content); // Lấy danh sách hợp đồng từ content
+    //             setTotalPages(data.totalPages); // Lấy tổng số trang
+    //         } catch (error) {
+    //             console.error("Error fetching contracts:", error);
+    //         }
+    //     };
+    //     fetchContracts();
+    // }, [currentPage]); // Gọi lại khi currentPage thay đổi
 
     const handleOpenModal = async (id) => {
         const data = await seeDetail(id);
@@ -111,6 +114,28 @@ export default function ContractPage() {
                             onChange={(e) => setSearchText(e.target.value)} // Sửa setSearchType thành setSearchText
                         />
                     </div>
+                </div>
+            </div>
+            <div className={`container flex flex-row-reverse gap-2 mt-2`}>
+                <div>
+                    <CommonButton className={`px-2 mx-2`}
+                                  onClick={() => {
+                                      setSubject("contracts")
+                                      setCreateModal(true)
+                                  }}
+                    >
+                        Create Contract
+                    </CommonButton>
+                </div>
+                <div>
+                    <CommonButton className={`px-2 mx-2`}
+                                  onClick={() => {
+                                      setSubject("issuingContract")
+                                      setCreateModal(true)
+                                  }}
+                    >
+                        Create issuing Contract with liability
+                    </CommonButton>
                 </div>
             </div>
             <div className={`flex flex-row gap-2 mt-2`}>
@@ -295,6 +320,15 @@ export default function ContractPage() {
                     onClose={() => setModal(false)}
                     subject={"contracts"}
                     data={modalData}
+                />
+            )}
+            {createModal && (
+                <CreateModal
+                    onClose={() => {
+                        setCreateModal(false)
+                        setSubject("")
+                    }}
+                    subject={subject}
                 />
             )}
         </div>
