@@ -188,7 +188,7 @@ export default function CardPage() {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="4" className="border p-2 text-center">Không có kết quả</td>
+                                <td colSpan="5" className="border p-2 text-center">Không có kết quả</td>
                             </tr>
                         )}
                         </tbody>

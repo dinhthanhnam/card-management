@@ -23,7 +23,10 @@ const ENTITY_CONFIGS = {
             { id: "createClientInObject.individualTaxpayerNumber", label: "Individual Taxpayer Number", path: "createClientInObject.individualTaxpayerNumber", placeholder: "12 digits", required: true},
             { id: "createClientInObject.addressLine1", label: "Address Line 1", path: "createClientInObject.addressLine1", placeholder: "Ha Noi Viet Nam"},
             { id: "createClientInObject.citizenship", label: "Citizenship", path: "createClientInObject.citizenship", placeholder: "VNM"},
-            { id: "createClientInObject.companyName", label: "Company Name", path: "createClientInObject.companyName", placeholder: "OpenWay"}
+            { id: "createClientInObject.companyName", label: "Company Name", path: "createClientInObject.companyName", placeholder: "OpenWay"},
+            { id: "createClientInObject.salutationCode", label: "Salutation Code", path: "createClientInObject.salutationCode", placeholder: "MR", required: true },
+            { id: "createClientInObject.embossedFirstName", label: "Embossed First Name", path: "createClientInObject.embossedFirstName", required: true },
+            { id: "createClientInObject.embossedLastName", label: "Embossed Last Name", path: "createClientInObject.embossedLastName", required: true },
         ],
         hasCustomData: true
     },
