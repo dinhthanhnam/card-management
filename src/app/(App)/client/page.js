@@ -76,7 +76,6 @@ export default function ClientPage() {
                                 <td className="border p-2">{client.regNumber || "No reg number"}</td>
                                 <td className="border p-2 text-center">
                                     <CommonButton
-                                        className="!w-20 bg-blue-500 hover:bg-blue-600 text-white"
                                         onClick={() => handleOpenEditModal(client)}
                                     >
                                         Sửa
@@ -120,6 +119,7 @@ export default function ClientPage() {
             {editModal && (
                 <EditModal
                     onClose={() => setEditModal(false)}
+                    subject="clients"
                     client={selectedClient}
                 />
             )}
