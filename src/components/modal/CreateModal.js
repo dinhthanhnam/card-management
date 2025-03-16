@@ -12,7 +12,7 @@ const ENTITY_CONFIGS = {
             { id: "createClientInObject.shortName", label: "Short Name", path: "createClientInObject.shortName" },
             { id: "createClientInObject.firstName", label: "First Name", path: "createClientInObject.firstName" },
             { id: "createClientInObject.lastName", label: "Last Name", path: "createClientInObject.lastName" },
-            { id: "createClientInObject.eMail", label: "Email", path: "createClientInObject.eMail" },
+            { id: "createClientInObject.email", label: "Email", path: "createClientInObject.eMail" },
             { id: "createClientInObject.martialStatusCode", label: "Martial Status", path: "createClientInObject.martialStatusCode", placeholder: "D" },
             { id: "createClientInObject.institutionCode", label: "Institution Code", path: "createClientInObject.institutionCode", placeholder: "0001" , required: true },
             { id: "createClientInObject.branch", label: "Branch", path: "createClientInObject.branch" , placeholder: "0101", required: true },
