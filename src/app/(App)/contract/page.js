@@ -1,79 +1,119 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Search, LockKeyhole, LockKeyholeOpen, ListCollapse, X } from "lucide-react";
+import React, { useState } from "react";
+import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 import FormInput from "@/components/common/FormInput";
 import { FormSelect } from "@/components/common/FormSelect";
 import CommonButton from "@/components/common/CommonBottom";
-import { BiDetail } from "react-icons/bi";
-import ReadModal from "@/components/modal/ReadModal";
-import { modalrequest } from "@/utils/modalrequest";
-import { fetchContract } from "@/utils/fetchcontract";
 import SearchBar from "@/components/common/SearchBar";
 import CreateModal from "@/components/modal/CreateModal";
+import { fetchContractByNumber, fetchContractsByClient } from "@/utils/fetchcontract";
+import api from "@/utils/axiosinstance";
 
 export default function ContractPage() {
-    const [searchType, setSearchType] = useState("");
+    const [searchType, setSearchType] = useState("contractNumber");
     const [searchText, setSearchText] = useState("");
-    const [lockedContracts, setLockedContracts] = useState({});
-    const [seeContractRelation, setSeeContractRelation] = useState(false);
-    const [selectedContract, setSelectedContract] = useState(null);
-    const [modal, setModal] = useState(false);
-    const [createModal, setCreateModal] = useState(false);
-    const [contractsData, setContractsData] = useState([]); // Đổi từ {} thành [] để phù hợp với content
-    const [modalData, setModalData] = useState({});
     const [toggleSearch, setToggleSearch] = useState(false);
-    const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
-    const [totalPages, setTotalPages] = useState(0); // Tổng số trang
-    const contractsPerPage = 10; // Số hợp đồng mỗi trang
+    const [contractsData, setContractsData] = useState([]);
+    const [selectedContractIndex, setSelectedContractIndex] = useState(-1);
+    const [createModal, setCreateModal] = useState(false);
     const [subject, setSubject] = useState("");
+    const [editedContract, setEditedContract] = useState(null); // Lưu trạng thái chỉnh sửa
+    const [message, setMessage] = useState("");
+    const [success, setSuccess] = useState(null);
+    const handleSearch = async () => {
+        if (!searchText) {
+            setContractsData([]);
+            setSelectedContractIndex(-1);
+            setEditedContract(null);
+            return;
+        }
 
-    const toggleLock = (contractNumber) => {
-        setLockedContracts((prev) => ({
-            ...prev,
-            [contractNumber]: !prev[contractNumber],
-        }));
-    };
-
-    const openSearch = () => {
-        setToggleSearch(true);
-    };
-
-    // useEffect(() => {
-    //     const fetchContracts = async () => {
-    //         try {
-    //             const data = await fetchContract(null, currentPage, contractsPerPage);
-    //             setContractsData(data.content); // Lấy danh sách hợp đồng từ content
-    //             setTotalPages(data.totalPages); // Lấy tổng số trang
-    //         } catch (error) {
-    //             console.error("Error fetching contracts:", error);
-    //         }
-    //     };
-    //     fetchContracts();
-    // }, [currentPage]); // Gọi lại khi currentPage thay đổi
-
-    const handleOpenModal = async (id) => {
-        const data = await seeDetail(id);
-        if (data) {
-            setModalData(data);
-            setModal(true);
+        try {
+            if (searchType === "contractNumber") {
+                const data = await fetchContractByNumber(searchText);
+                const contracts = data?.contracts || [];
+                setContractsData(contracts);
+                setSelectedContractIndex(contracts.length > 0 ? 0 : -1);
+                setEditedContract(contracts.length > 0 ? { ...contracts[0] } : null);
+            } else if (searchType === "client") {
+                const data = await fetchContractsByClient(searchText);
+                const contracts = data?.contracts || [];
+                setContractsData(contracts);
+                setSelectedContractIndex(contracts.length > 0 ? 0 : -1);
+                setEditedContract(contracts.length > 0 ? { ...contracts[0] } : null);
+            }
+        } catch (error) {
+            console.error("Error fetching contracts:", error);
+            setContractsData([]);
+            setSelectedContractIndex(-1);
+            setEditedContract(null);
         }
     };
 
-    const handleSeeContractRelation = async (contractId) => {
-        setSelectedContract(await fetchContract(contractId));
-        setSeeContractRelation(true);
-    };
-
-    const seeDetail = async (id) => {
-        return await modalrequest("contracts", id);
-    };
-
-    // Điều hướng trang
-    const handlePageChange = (newPage) => {
-        if (newPage >= 0 && newPage < totalPages) {
-            setCurrentPage(newPage);
+    const handlePrevContract = () => {
+        if (selectedContractIndex > 0) {
+            setSelectedContractIndex(selectedContractIndex - 1);
+            setEditedContract({ ...contractsData[selectedContractIndex - 1] });
         }
     };
+
+    const handleNextContract = () => {
+        if (selectedContractIndex < contractsData.length - 1) {
+            setSelectedContractIndex(selectedContractIndex + 1);
+            setEditedContract({ ...contractsData[selectedContractIndex + 1] });
+        }
+    };
+
+    const handleInputChange = (field, value) => {
+        setEditedContract((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleSave = async () => {
+        if (!editedContract) return;
+
+        const payload = {
+            contractSearchMethod: "CONTRACT_NUMBER",
+            contractIdentifier: editedContract.contractNumber,
+            reason: "Update contract details",
+            editContractInObject: {
+                branch: editedContract.branch,
+                contractNumber: editedContract.contractNumber,
+                contractName: editedContract.contractName,
+                cbsNumber: editedContract.cbsNumber,
+                // Các trường khác như serviceGroup, cbsID, closeDate nếu cần thì thêm
+            },
+            setCustomDataInObjects: [
+                {
+                    addInfoType: "AddInfo01",
+                    tagName: "PrevID_01",
+                    tagValue: "A1",
+                }
+            ], // Nếu cần thêm custom data thì xử lý sau
+        };
+
+        try {
+            const res = await api.put("/contracts/edit", payload);
+
+            if (!res.data.success) {
+                setSuccess(false);
+                setMessage(res.data.message);
+            }
+            // Cập nhật contractsData với dữ liệu đã chỉnh sửa
+            const updatedContracts = contractsData.map((contract, index) =>
+                index === selectedContractIndex ? { ...editedContract } : contract
+            );
+            setContractsData(updatedContracts);
+            setSuccess(true);
+            setMessage(res.data.message);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setSuccess(false);
+            setMessage("Lỗi");
+        }
+    };
+
+    const selectedContract = selectedContractIndex >= 0 ? contractsData[selectedContractIndex] : null;
 
     return (
         <div className="p-2">
@@ -87,246 +127,182 @@ export default function ContractPage() {
                         }`}
                     >
                         <Search size={16} />
-                        Tìm kiếm đơn giản
+                        Tìm kiếm
                     </button>
                 </div>
 
-                {/* Khối tìm kiếm */}
                 <div
                     className={`overflow-hidden transition-all duration-300 ${
                         toggleSearch ? "mt-4 p-4 border-t border-gray-300 bg-gray-50 rounded-b-md" : "h-0"
                     }`}
                 >
                     <FormSelect
-                        label="Loại hợp đồng"
-                        name="type"
-                        options={["LIABILITY", "ISSUING"]}
+                        label="Tìm kiếm theo"
+                        name="searchType"
+                        options={[
+                            { value: "contractNumber", label: "Mã hợp đồng" },
+                            { value: "client", label: "Khách hàng" },
+                        ]}
                         value={searchType}
                         onChange={(e) => setSearchType(e.target.value)}
                     />
                     <div>
                         <label className="block text-gray-700 font-medium mb-1">
-                            Tìm kiếm theo mã hợp đồng hoặc số định danh
+                            {searchType === "contractNumber" ? "Mã hợp đồng" : "Số định danh khách hàng"}
                         </label>
                         <SearchBar
                             value={searchText}
-                            onSearch={() => {}}
-                            onChange={(e) => setSearchText(e.target.value)} // Sửa setSearchType thành setSearchText
+                            onSearch={handleSearch}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            showButton={true}
                         />
                     </div>
                 </div>
             </div>
-            <div className={`container flex flex-row-reverse gap-2 mt-2`}>
-                <div>
-                    <CommonButton className={`px-2 mx-2`}
-                                  onClick={() => {
-                                      setSubject("contracts")
-                                      setCreateModal(true)
-                                  }}
-                    >
-                        Create Contract
-                    </CommonButton>
-                </div>
-                <div>
-                    <CommonButton className={`px-2 mx-2`}
-                                  onClick={() => {
-                                      setSubject("issuingContract")
-                                      setCreateModal(true)
-                                  }}
-                    >
-                        Create issuing Contract with liability
-                    </CommonButton>
-                </div>
-            </div>
-            <div className={`flex flex-row gap-2 mt-2`}>
-                <div className="container h-full">
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                        <tr className="bg-gray-100">
-                            <th className="border p-2">Mã hợp đồng</th>
-                            <th className="border p-2">Loại hợp đồng</th>
-                            <th className="border p-2">Hành động</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {contractsData.length > 0 ? (
-                            contractsData.map((contract) => (
-                                <tr key={contract.id} className={`cursor-pointer hover:bg-gray-100`}>
-                                    <td className="border p-2">
-                                        <div className="flex items-center justify-center gap-2">
-                                            <button
-                                                onClick={async () => {
-                                                    await handleOpenModal(contract.id);
-                                                }}
-                                            >
-                                                <BiDetail className="text-sky-700 text-lg" />
-                                            </button>
-                                            <span>{contract.contractNumber}</span>
-                                        </div>
-                                    </td>
-                                    <td className="border p-2">{contract.contractType}</td>
-                                    <th className="border">
-                                        <div className={`flex items-center justify-center gap-4`}>
-                                            <button
-                                                className={`hover:bg-gray-300 text-gray-600 rounded-full duration-100 p-1`}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    toggleLock(contract.contractNumber);
-                                                }}
-                                            >
-                                                {lockedContracts[contract.contractNumber] ?? contract.locked ? (
-                                                    <LockKeyhole size={`20`} />
-                                                ) : (
-                                                    <LockKeyholeOpen size={`20`} />
-                                                )}
-                                            </button>
-                                            <button
-                                                className={`hover:bg-gray-300 text-gray-600 rounded-full duration-100 p-1`}
-                                                onClick={(e) => handleSeeContractRelation(contract.id)}
-                                            >
-                                                <ListCollapse size={`20`} />
-                                            </button>
-                                        </div>
-                                    </th>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="3" className="border p-2 text-center">Không có kết quả</td>
-                            </tr>
-                        )}
-                        </tbody>
-                    </table>
 
-                    {/* Nút phân trang */}
-                    {contractsData.length > 0 && (
-                        <div className="flex justify-center gap-4 mt-4">
+            <div className="container flex flex-row-reverse gap-2 mt-2">
+                <CommonButton
+                    className="px-2 mx-2"
+                    onClick={() => {
+                        setSubject("contracts");
+                        setCreateModal(true);
+                    }}
+                >
+                    Create Contract
+                </CommonButton>
+                <CommonButton
+                    className="px-2 mx-2"
+                    onClick={() => {
+                        setSubject("issuingContract");
+                        setCreateModal(true);
+                    }}
+                >
+                    Create Issuing Contract with Liability
+                </CommonButton>
+            </div>
+
+            {selectedContract && (
+                <div className="container mt-2 border border-gray-300 rounded-lg p-4 bg-white relative">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold text-gray-600">Chi tiết hợp đồng</h2>
+                        <div className="flex gap-2">
+                            {contractsData.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={handlePrevContract}
+                                        disabled={selectedContractIndex === 0}
+                                        className="p-2 bg-gray-200 rounded disabled:opacity-50"
+                                    >
+                                        <ChevronLeft size={20} />
+                                    </button>
+                                    <button
+                                        onClick={handleNextContract}
+                                        disabled={selectedContractIndex === contractsData.length - 1}
+                                        className="p-2 bg-gray-200 rounded disabled:opacity-50"
+                                    >
+                                        <ChevronRight size={20} />
+                                    </button>
+                                </>
+                            )}
                             <button
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 0}
-                                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                                onClick={() => {
+                                    setSelectedContractIndex(-1);
+                                    setEditedContract(null);
+                                }}
+                                className="p-2 rounded-full hover:bg-gray-200"
                             >
-                                Previous
-                            </button>
-                            <span className="flex items-center">
-                                Trang {currentPage + 1} / {totalPages}
-                            </span>
-                            <button
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages - 1}
-                                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-                            >
-                                Next
+                                <X className="w-6 h-6 text-gray-500" />
                             </button>
                         </div>
-                    )}
-                </div>
-                {seeContractRelation && (
-                    <div className="container w-2/3 relative h-full">
-                        <button
-                            onClick={() => setSeeContractRelation(false)}
-                            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200"
-                        >
-                            <X className="cursor-pointer w-6 h-6" />
-                        </button>
-                        <h2 className="text-xl font-bold mb-4">Quan hệ</h2>
-                        <table className="w-full border border-gray-300">
-                            <thead>
-                            <tr className="bg-gray-100">
-                                <th className="border p-3" colSpan="2">Khách hàng</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {selectedContract?.contractType === "LIABILITY" && selectedContract.client ? (
-                                <tr className="hover:bg-gray-100">
-                                    <td className="border p-3">
-                                        {selectedContract.client.lastName + " " + selectedContract.client.firstName}
-                                    </td>
-                                    <td className="border p-3">{selectedContract.client.identityNumber}</td>
-                                </tr>
-                            ) : selectedContract?.contractType === "LIABILITY" ? (
-                                <tr>
-                                    <td className="border p-3 text-center" colSpan="2">
-                                        <p className="text-gray-500">Hợp đồng này chưa được liên kết</p>
-                                        <CommonButton>Liên kết khách hàng</CommonButton>
-                                    </td>
-                                </tr>
-                            ) : null}
-
-                            {selectedContract?.contractType === "LIABILITY" && (
-                                <tr className="bg-gray-100">
-                                    <th className="border p-3" colSpan="2">Hợp đồng liên kết</th>
-                                </tr>
-                            )}
-                            {selectedContract?.contractType === "LIABILITY" && selectedContract.children?.length > 0 ? (
-                                selectedContract.children.map((childContract) => (
-                                    <tr key={childContract.contractNumber} className="hover:bg-gray-100">
-                                        <td className="border p-3">{childContract.contractNumber}</td>
-                                        <td className="border p-3">{childContract.contractType}</td>
-                                    </tr>
-                                ))
-                            ) : selectedContract?.contractType === "LIABILITY" ? (
-                                <tr>
-                                    <td className="border p-3 text-center" colSpan={2}>
-                                        <p className="text-gray-500">Hợp đồng này chưa có issuing</p>
-                                        <CommonButton>Liên kết hợp đồng</CommonButton>
-                                    </td>
-                                </tr>
-                            ) : null}
-
-                            {selectedContract?.contractType === "ISSUING" && selectedContract.client ? (
-                                <tr className="hover:bg-gray-100">
-                                    <td className="border p-3">
-                                        {selectedContract.client.lastName + " " + selectedContract.client.firstName}
-                                    </td>
-                                    <td className="border p-3">{selectedContract.client.identityNumber}</td>
-                                </tr>
-                            ) : selectedContract?.contractType === "ISSUING" ? (
-                                <tr>
-                                    <td className="border p-3 text-center" colSpan="2">
-                                        <p className="text-gray-500">Hợp đồng này chưa được liên kết</p>
-                                        <CommonButton>Liên kết khách hàng</CommonButton>
-                                    </td>
-                                </tr>
-                            ) : null}
-
-                            {selectedContract?.contractType === "ISSUING" && (
-                                <tr className="bg-gray-100">
-                                    <th className="border p-3" colSpan={2}>Thẻ liên kết</th>
-                                </tr>
-                            )}
-                            {selectedContract?.contractType === "ISSUING" && selectedContract.issuedCards ? (
-                                selectedContract.issuedCards.map((card) => (
-                                    <tr key={card.cardNumber} className="hover:bg-gray-100">
-                                        <td className="border p-3">{card.cardNumber}</td>
-                                        <td className="border p-3">ISSUED CARD</td>
-                                    </tr>
-                                ))
-                            ) : selectedContract?.contractType === "ISSUING" ? (
-                                <tr>
-                                    <td className="border p-3 text-center">
-                                        <p className="text-gray-500">Hợp đồng này chưa được liên kết thẻ</p>
-                                        <CommonButton>Liên kết thẻ</CommonButton>
-                                    </td>
-                                </tr>
-                            ) : null}
-                            </tbody>
-                        </table>
                     </div>
-                )}
-            </div>
-            {modal && (
-                <ReadModal
-                    onClose={() => setModal(false)}
-                    subject={"contracts"}
-                    data={modalData}
-                />
+                    <div className="grid grid-cols-3 gap-4">
+                        <FormInput label="Institution" value={editedContract?.institution || "N/A"} disabled />
+                        <FormInput
+                            label="Branch"
+                            value={editedContract?.branch || ""}
+                            onChange={(e) => handleInputChange("branch", e.target.value)}
+                        />
+                        <FormInput label="Client Category" value={editedContract?.clientCategory || "N/A"} disabled />
+                        <FormInput label="Client Type" value={editedContract?.clientType || "N/A"} disabled />
+                        <FormInput label="Product Category" value={editedContract?.productCategory || "N/A"} disabled />
+                        <FormInput label="Redefined Product Category" value={editedContract?.redefinedProductCategory || "N/A"} disabled />
+                        <FormInput label="Contract Category" value={editedContract?.contractCategory || "N/A"} disabled />
+                        <FormInput label="Main Product Corrected" value={editedContract?.mainProductCorrected || "N/A"} disabled />
+                        <FormInput label="Main Product ITD" value={editedContract?.mainProductITD || "N/A"} disabled />
+                        <FormInput label="Product" value={editedContract?.product || "N/A"} disabled />
+                        <FormInput label="Contract Subtype" value={editedContract?.contractSubtype || "N/A"} disabled />
+                        <FormInput label="Report Type" value={editedContract?.reportType || "N/A"} disabled />
+                        <FormInput label="Role" value={editedContract?.role || "N/A"} disabled />
+                        <FormInput label="Icon" value={editedContract?.icon || "N/A"} disabled />
+                        <FormInput label="Leaf" value={editedContract?.leaf || "N/A"} disabled />
+                        <FormInput label="Currency" value={editedContract?.currency || "N/A"} disabled />
+                        <FormInput label="Available" value={editedContract?.available || "N/A"} disabled />
+                        <FormInput label="Balance" value={editedContract?.balance || "N/A"} disabled />
+                        <FormInput label="Credit Limit" value={editedContract?.creditLimit || "N/A"} disabled />
+                        <FormInput label="Add Limit" value={editedContract?.addLimit || "N/A"} disabled />
+                        <FormInput label="Blocked" value={editedContract?.blocked || "N/A"} disabled />
+                        <FormInput label="Total Due" value={editedContract?.totalDue || "N/A"} disabled />
+                        <FormInput label="Past Due" value={editedContract?.pastDue || "N/A"} disabled />
+                        <FormInput label="Shadow Auth Limit" value={editedContract?.shadowAuthLimit || "N/A"} disabled />
+                        <FormInput label="Client" value={editedContract?.client || "N/A"} disabled />
+                        <FormInput label="Contract Number" value={editedContract?.contractNumber || "N/A"} disabled />
+                        <FormInput label="Safe Contract Number" value={editedContract?.safeContractNumber || "N/A"} disabled />
+                        <FormInput
+                            label="Contract Name"
+                            value={editedContract?.contractName || ""}
+                            onChange={(e) => handleInputChange("contractName", e.target.value)}
+                        />
+                        <FormInput label="Contract Level" value={editedContract?.contractLevel || "N/A"} disabled />
+                        <FormInput label="Billing Contact" value={editedContract?.billingContact || "N/A"} disabled />
+                        <FormInput label="Top Contract" value={editedContract?.topContract || "N/A"} disabled />
+                        <FormInput
+                            label="CBS Number"
+                            value={editedContract?.cbsNumber || ""}
+                            onChange={(e) => handleInputChange("cbsNumber", e.target.value)}
+                        />
+                        <FormInput label="Open Date" value={editedContract?.openDate || "N/A"} disabled />
+                        <FormInput label="Check Usage" value={editedContract?.checkUsage || "N/A"} disabled />
+                        <FormInput label="Last Billing Date" value={editedContract?.lastBillingDate || "N/A"} disabled />
+                        <FormInput label="Next Billing Date" value={editedContract?.nextBillingDate || "N/A"} disabled />
+                        <FormInput label="Past Due Days" value={editedContract?.pastDueDays || "N/A"} disabled />
+                        <FormInput label="Add Parm String" value={editedContract?.addParmString || "N/A"} disabled />
+                        <FormInput label="Status" value={editedContract?.status || "N/A"} disabled />
+                        <FormInput label="Status Code" value={editedContract?.statusCode || "N/A"} disabled />
+                        <FormInput label="External Code" value={editedContract?.externalCode || "N/A"} disabled />
+                        <FormInput label="Last Application Date" value={editedContract?.lastApplicationDate || "N/A"} disabled />
+                        <FormInput label="Last Application Officer" value={editedContract?.lastApplicationOfficer || "N/A"} disabled />
+                        <FormInput label="Last Application Status" value={editedContract?.lastApplicationStatus || "N/A"} disabled />
+                        <FormInput label="Last Activity Date" value={editedContract?.lastActivityDate || "N/A"} disabled />
+                        <FormInput label="Ready" value={editedContract?.ready || "N/A"} disabled />
+                        <FormInput label="Amendment Date" value={editedContract?.amendmentDate || "N/A"} disabled />
+                        <FormInput label="Amendment Officer" value={editedContract?.amendmentOfficer || "N/A"} disabled />
+                        <FormInput label="ID" value={editedContract?.id || "N/A"} disabled />
+                        <FormInput label="Client Full Name" value={editedContract?.clientFullName || "N/A"} disabled />
+                        <FormInput label="Product Code" value={editedContract?.productCode || "N/A"} disabled />
+                        <FormInput label="Main Product Code" value={editedContract?.mainProductCode || "N/A"} disabled />
+                    </div>
+                    {message && (
+                        <div className={`p-2 border rounded-md  ${success ? `text-green-700 bg-green-300 border-green-500 ` : `text-red-700 bg-red-300 border-red-500 `} `}>
+                            {message}
+                        </div>
+                    )}
+
+                    <div className="flex justify-start mt-4">
+                        <CommonButton
+                            className="w-20 bg-blue-500 hover:bg-blue-600 text-white"
+                            onClick={handleSave}
+                        >
+                            Lưu
+                        </CommonButton>
+                    </div>
+                </div>
             )}
+
             {createModal && (
                 <CreateModal
                     onClose={() => {
-                        setCreateModal(false)
-                        setSubject("")
+                        setCreateModal(false);
+                        setSubject("");
                     }}
                     subject={subject}
                 />

@@ -1,23 +1,28 @@
 import api from "@/utils/axiosinstance";
 
-export const fetchContract = async (id = null, page = 0, size = 10) => {
+export const fetchContractByNumber = async (contractNumber) => {
     try {
-        let url;
-        let params = {};
-
-        if (id) {
-            // Trường hợp lấy chi tiết hợp đồng theo id
-            url = `/contracts/${id}`; // Đảm bảo prefix khớp với backend
-        } else {
-            // Trường hợp lấy danh sách hợp đồng với phân trang
-            url = `/contracts`; // Đảm bảo prefix khớp với backend
-            params = { page, size };
-        }
-
-        const res = await api.get(url, { params });
-        return res.data; // Trả về chi tiết hợp đồng (id) hoặc { content: [], totalPages: number, ... } (danh sách)
+        const payload = {
+            contractNumber: contractNumber, // Dựa trên GetContractByNumberV2
+        };
+        const res = await api.post("/contracts/getContractByNumber", payload);
+        return res.data;
     } catch (error) {
-        console.error("Error fetching contract:", error.response?.data || error.message);
+        console.error("Error fetching contract by number:", error);
+        throw error;
+    }
+};
+
+export const fetchContractsByClient = async (clientIdentifier) => {
+    try {
+        const payload = {
+            clientSearchMethod: "CLIENT_NUMBER", // Hardcode hoặc có thể làm động sau
+            clientIdentifier: clientIdentifier, // Dựa trên GetContractsByClientV2
+        };
+        const res = await api.post("/contracts/getContractsByClient", payload);
+        return res.data;
+    } catch (error) {
+        console.error("Error fetching contracts by client:", error);
         throw error;
     }
 };

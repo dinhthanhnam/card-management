@@ -2,13 +2,15 @@
 import React, { useState, useEffect } from "react";
 import { fetchClient } from "@/utils/fetchclient"; // Giả định đây là hàm gọi API
 import CommonButton from "@/components/common/CommonBottom"; // Sửa tên import nếu cần (CommonBottom -> CommonButton)
-import EditModal from "@/components/modal/EditModal"; // Import EditModal (sẽ làm sau)
+import EditModal from "@/components/modal/EditModal";
+import CreateModal from "@/components/modal/CreateModal"; // Import EditModal (sẽ làm sau)
 
 export default function ClientPage() {
     const [clientsData, setClientsData] = useState([]);
     const [currentPageClients, setCurrentPageClients] = useState(0);
     const [totalPagesClients, setTotalPagesClients] = useState(0);
     const [editModal, setEditModal] = useState(false);
+    const [createModal, setCreateModal] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
     const clientsPerPage = 10;
 
@@ -39,6 +41,10 @@ export default function ClientPage() {
         setEditModal(true);
     };
 
+    const handleOpenCreateModal = () => {
+        setEditModal(true);
+    };
+
     return (
         <div className="p-2">
             <div className="container w-full">
@@ -46,10 +52,7 @@ export default function ClientPage() {
                     <h2 className="text-xl font-bold mb-3">Danh sách khách hàng</h2>
                     <CommonButton
                         className="!w-40"
-                        onClick={() => {
-                            // Logic tạo client mới có thể thêm sau nếu cần
-                            console.log("Tạo khách hàng mới");
-                        }}
+                        onClick={() => handleOpenCreateModal()}
                     >
                         Thêm khách hàng
                     </CommonButton>
@@ -121,6 +124,13 @@ export default function ClientPage() {
                     onClose={() => setEditModal(false)}
                     subject="clients"
                     client={selectedClient}
+                />
+            )}
+
+            {createModal && (
+                <CreateModal
+                    onClose={() => setCreateModal(false)}
+                    subject="clients"
                 />
             )}
         </div>

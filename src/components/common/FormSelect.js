@@ -7,14 +7,20 @@ export function FormSelect({ label, name, options = [], value = "", disabled = f
                 value={value}
                 disabled={disabled}
                 onChange={onChange}
-                className={`!${className} w-full border border-gray-300 p-2 rounded-lg input-field `}
+                className={`${className || ""} w-full border border-gray-300 p-2 rounded-lg input-field`}
             >
                 <option value="">Chọn...</option>
-                {options.map((option, index) => (
-                    <option className={`mr-4`} key={index} value={option}>
-                        {option}
-                    </option>
-                ))}
+                {options.map((option, index) => {
+                    // Kiểm tra xem option là object hay string
+                    const optionValue = typeof option === "object" ? option.value : option;
+                    const optionLabel = typeof option === "object" ? option.label : option;
+
+                    return (
+                        <option key={index} value={optionValue}>
+                            {optionLabel}
+                        </option>
+                    );
+                })}
             </select>
         </div>
     );
