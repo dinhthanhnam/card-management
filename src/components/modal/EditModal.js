@@ -1,7 +1,7 @@
 import { X, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import FormInput from "@/components/common/FormInput";
-import CommonButton from "@/components/common/CommonBottom"; // Giả định tên đúng là CommonButton
+import CommonButton from "@/components/common/CommonButtom"; // Giả định tên đúng là CommonButton
 import { editClient, editContract } from "@/utils/EditService"; // Giả định hàm gửi request chỉnh sửa
 
 // Các config cho từng loại đối tượng

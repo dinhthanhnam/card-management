@@ -7,7 +7,7 @@ import { BiDetail } from "react-icons/bi";
 import SearchBar from "@/components/common/SearchBar";
 import {fetchClient} from "@/utils/fetchclient";
 import {fetchCard} from "@/utils/fetchcard";
-import CommonButton from "@/components/common/CommonBottom";
+import CommonButton from "@/components/common/CommonButtom";
 import CreateModal from "@/components/modal/CreateModal";
 
 export default function CardPage() {

@@ -6,9 +6,9 @@ import axios from "axios";
 import LoadingBar from "../../components/Visibility/LoadingBar";
 import SidebarNavigation from "@/components/Navigation/SidebarNavigation";
 import Header from "@/components/common/Header";
-import IconHolder from "@/components/common/IconHolder";
+import { IconHolder } from "@/components/common/IconHolder";
 import { ChevronRight, MenuIcon } from "lucide-react";
-import ChevronHolder from "@/components/common/Chevron";
+import { ChevronHolder } from "@/components/common/Chevron";
 import api from "@/utils/axiosinstance";
 
 export default function AppLayout({ children }) {

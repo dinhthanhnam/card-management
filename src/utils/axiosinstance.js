@@ -8,6 +8,10 @@ const api = axios.create({
         "X-CorrelationId": "?",
         "X-SessionContextStr":"?"
     },
+    validateStatus: (status) => {
+        // Không ném lỗi cho status 400, coi nó là response hợp lệ
+        return status >= 200 && status < 500; // Chấp nhận 2xx, 3xx, 400, 401, 403, v.v.
+    },
 });
 
 // 🔹 Lấy token từ localStorage

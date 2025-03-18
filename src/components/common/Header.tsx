@@ -1,10 +1,8 @@
 "use client";
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, ChevronRight, HomeIcon, User, LogOut, Info } from "lucide-react";
-import SearchBar from "@/components/common/SearchBar";
-import IconHolder from "@/components/common/IconHolder";
-import ChevronHolder from "@/components/common/Chevron";
+import { HomeIcon, User, LogOut, Info } from "lucide-react";
+import {IconHolder} from "@/components/common/IconHolder";
 
 export default function Header({ children }) {
     const router = useRouter();

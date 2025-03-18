@@ -1,5 +1,5 @@
 "use client";
-import CommonBottom from "@/components/common/CommonBottom";
+import CommonBottom from "@/components/common/CommonButtom";
 import { useRouter } from "next/navigation";
 
 export default function RootContent() {

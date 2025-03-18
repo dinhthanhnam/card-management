@@ -1,6 +1,6 @@
 "use client";
 import FormInput from "@/components/common/FormInput";
-import CommonBottom from "@/components/common/CommonBottom";
+import CommonBottom from "@/components/common/CommonButtom";
 
 export default function ProfilePage({ children }) {
     const user = JSON.parse(localStorage.getItem("user")) || {}; // Fix lỗi

@@ -1,4 +1,12 @@
-export default function IconHolder({ children, active, onClick }) {
+import React from "react";
+
+interface IconHolderProps {
+    children?: React.ReactNode,
+    active?: boolean,
+    onClick?: () => void,
+}
+
+export function IconHolder({ children, active = false, onClick } : IconHolderProps) {
     return (
         <div
             onClick={onClick}
