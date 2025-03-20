@@ -1,11 +1,11 @@
 import React from 'react';
 
 interface CommonButtonProps {
-    onClick?: () => void,
-    className?: string,
-    type?: 'button' | 'submit' | 'reset',
-    children?: React.ReactNode,
-    disabled?: boolean
+    onClick?: (() => void) | ((e: React.MouseEvent) => void);
+    className?: string;
+    type?: 'button' | 'submit' | 'reset';
+    children?: React.ReactNode;
+    disabled?: boolean;
 }
 
 export default function CommonButton({

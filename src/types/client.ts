@@ -1,7 +1,13 @@
-interface Client {
-    id: number;
+export interface Client {
+    id: string;
     shortName?: string;
     clientNumber?: string;
     regNumber?: string;
-    [key: string]: any; // For any additional properties
+    contracts?: Contract[];
+}
+
+export interface Contract {
+    contractNumber: string;
+    contractType: string;
+    subContracts?: Contract[]; // Đệ quy với chính Contract
 }

@@ -4,35 +4,51 @@ import { fetchClient } from "@/utils/fetchclient";
 import CommonButton from "@/components/common/CommonButton";
 import EditModal from "@/components/modal/EditModal";
 import CreateClientModal from "@/components/modal/CreateClientModal";
-
+import ClientList from "@/components/CLientList";
+import {Client, Contract} from "@/types/client"
+import CreateLiabContractModal from "@/components/modal/CreateLiabContractModal";
+import CreateIssuingContractModal from "@/components/modal/CreateIssuingContractModal";
 
 // Define state interface
 interface State {
     clientsData: Client[];
     currentPage: number;
     totalPages: number;
-    editModal: boolean;
-    createModal: boolean;
+    editClientModal: boolean;
+    createClientModal: boolean;
+    createLiabContractModal: boolean;
+    createIssuingContractModal: boolean;
+    createCardContractModal: boolean;
     selectedClient: Client | null;
     clientsPerPage: number;
 }
 
 // Define action types
 type Action =
-| { type: 'FETCH_CLIENTS_SUCCESS'; payload: { clients: Client[]; totalPages: number } }
-| { type: 'SET_CURRENT_PAGE'; payload: number }
-| { type: 'OPEN_EDIT_MODAL'; payload: Client }
-| { type: 'CLOSE_EDIT_MODAL' }
-| { type: 'OPEN_CREATE_CLIENT_MODAL' }
-| { type: 'CLOSE_CREATE_CLIENT_MODAL' };
+    | { type: "FETCH_CLIENTS_SUCCESS"; payload: { clients: Client[]; totalPages: number } }
+    | { type: "SET_CURRENT_PAGE"; payload: number }
+    | { type: "OPEN_EDIT_MODAL"; payload: Client }
+    | { type: "CLOSE_EDIT_MODAL" }
+    | { type: "OPEN_CREATE_CLIENT_MODAL" }
+    | { type: "CLOSE_CREATE_CLIENT_MODAL" }
+    | { type: "OPEN_CREATE_LIAB_CONTRACT_MODAL", payload: Client}
+    | { type: "CLOSE_CREATE_LIAB_CONTRACT_MODAL" }
+    | { type: "OPEN_CREATE_ISSUING_CONTRACT_MODAL", payload: Client}
+    | { type: "CLOSE_CREATE_ISSUING_CONTRACT_MODAL" }
+    | { type: "OPEN_CREATE_CARD_CONTRACT_MODAL" }
+    | { type: "CLOSE_CREATE_CARD_CONTRACT_MODAL" }
+    ;
 
 // Initial state
 const initialState: State = {
     clientsData: [],
     currentPage: 0,
     totalPages: 0,
-    editModal: false,
-    createModal: false,
+    editClientModal: false,
+    createClientModal: false,
+    createLiabContractModal: false,
+    createIssuingContractModal: false,
+    createCardContractModal: false,
     selectedClient: null,
     clientsPerPage: 10,
 };
@@ -40,30 +56,30 @@ const initialState: State = {
 // Reducer function
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
-        case 'FETCH_CLIENTS_SUCCESS':
+        case "FETCH_CLIENTS_SUCCESS":
             return {
-                ...state, clientsData: action.payload.clients, totalPages: action.payload.totalPages,
+                ...state,
+                clientsData: action.payload.clients,
+                totalPages: action.payload.totalPages,
             };
-        case 'SET_CURRENT_PAGE':
-            return {
-                ...state, currentPage: action.payload,
-            };
-        case 'OPEN_EDIT_MODAL':
-            return {
-                ...state, editModal: true, selectedClient: action.payload,
-            };
-        case 'CLOSE_EDIT_MODAL':
-            return {
-                ...state, editModal: false, selectedClient: null,
-            };
-        case 'OPEN_CREATE_CLIENT_MODAL':
-            return {
-                ...state, createModal: true,
-            };
-        case 'CLOSE_CREATE_CLIENT_MODAL':
-            return {
-                ...state, createModal: false,
-            };
+        case "SET_CURRENT_PAGE":
+            return { ...state, currentPage: action.payload };
+        case "OPEN_EDIT_MODAL":
+            return { ...state, editClientModal: true, selectedClient: action.payload };
+        case "CLOSE_EDIT_MODAL":
+            return { ...state, editClientModal: false, selectedClient: null };
+        case "OPEN_CREATE_CLIENT_MODAL":
+            return { ...state, createClientModal: true };
+        case "CLOSE_CREATE_CLIENT_MODAL":
+            return { ...state, createClientModal: false };
+        case "OPEN_CREATE_LIAB_CONTRACT_MODAL":
+            return { ...state, createLiabContractModal: true, selectedClient: action.payload };
+        case "CLOSE_CREATE_LIAB_CONTRACT_MODAL":
+            return { ...state, createLiabContractModal: false, selectedClient: null };
+        case "OPEN_CREATE_ISSUING_CONTRACT_MODAL":
+            return { ...state, createIssuingContractModal: true, selectedClient: action.payload };
+        case "CLOSE_CREATE_ISSUING_CONTRACT_MODAL":
+            return { ...state, createIssuingContractModal: false, selectedClient: null };
         default:
             return state;
     }
@@ -71,15 +87,7 @@ const reducer = (state: State, action: Action): State => {
 
 export default function ClientPage() {
     const [state, dispatch] = useReducer(reducer, initialState);
-    const {
-        clientsData,
-        currentPage,
-        totalPages,
-        editModal,
-        createModal,
-        selectedClient,
-        clientsPerPage,
-    } = state;
+    const { clientsData, currentPage, totalPages, editClientModal, createClientModal, createLiabContractModal, createIssuingContractModal, createCardContractModal, selectedClient, clientsPerPage } = state;
 
     // Fetch clients data with pagination
     useEffect(() => {
@@ -87,7 +95,7 @@ export default function ClientPage() {
             try {
                 const data = await fetchClient(currentPage, clientsPerPage);
                 dispatch({
-                    type: 'FETCH_CLIENTS_SUCCESS',
+                    type: "FETCH_CLIENTS_SUCCESS",
                     payload: {
                         clients: data.clients || [],
                         totalPages: data.totalPages || 0,
@@ -97,25 +105,40 @@ export default function ClientPage() {
                 console.error("Error fetching clients:", error);
             }
         };
-
         fetchClientsData();
     }, [currentPage, clientsPerPage]);
 
     // Handle page change
     const handlePageChangeClients = (newPage: number) => {
         if (newPage >= 0 && newPage < totalPages) {
-            dispatch({ type: 'SET_CURRENT_PAGE', payload: newPage });
+            dispatch({ type: "SET_CURRENT_PAGE", payload: newPage });
         }
     };
 
     // Handle opening edit modal
     const handleOpenEditModal = (client: Client) => {
-        dispatch({ type: 'OPEN_EDIT_MODAL', payload: client });
+        dispatch({ type: "OPEN_EDIT_MODAL", payload: client });
     };
 
     // Handle opening create modal
     const handleOpenCreateModal = () => {
-        dispatch({ type: 'OPEN_CREATE_CLIENT_MODAL' });
+        dispatch({ type: "OPEN_CREATE_CLIENT_MODAL" });
+    };
+
+    // Handle creating liability contract (placeholder)
+    const handleCreateLiabilityContract = (client: Client) => {
+        dispatch({ type: "OPEN_CREATE_LIAB_CONTRACT_MODAL", payload: client});
+    };
+
+    // Handle creating issuing contract (placeholder)
+    const handleCreateIssuingContract = (client: Client) => {
+        dispatch({ type: "OPEN_CREATE_ISSUING_CONTRACT_MODAL", payload: client});
+    };
+
+    // Handle creating card contract (placeholder)
+    const handleCreateCardContract = (issuingContractId: string) => {
+        console.log(`Tạo hợp đồng thẻ cho hợp đồng phát hành ${issuingContractId}`);
+        // Logic tạo hợp đồng thẻ ở đây
     };
 
     return (
@@ -123,51 +146,19 @@ export default function ClientPage() {
             <div className="container w-full">
                 <div className="flex flex-row justify-between pb-4">
                     <h2 className="text-xl font-bold mb-3">Danh sách khách hàng</h2>
-                    <CommonButton
-                        className="!w-40"
-                        onClick={handleOpenCreateModal}
-                    >
+                    <CommonButton className="!w-40" onClick={handleOpenCreateModal}>
                         Thêm khách hàng
                     </CommonButton>
                 </div>
 
-                {/* Data table */}
-                <table className="w-full container border-collapse border border-gray-300 mt-4">
-                    <thead>
-                    <tr className="bg-gray-100">
-                        <th className="border p-2">Mã khách hàng</th>
-                        <th className="border p-2">Tên ngắn</th>
-                        <th className="border p-2">Số khách hàng</th>
-                        <th className="border p-2">Số đăng ký</th>
-                        <th className="border p-2">Hành động</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {clientsData.length > 0 ? (
-                        clientsData.map((client) => (
-                            <tr key={client.id} className="hover:bg-gray-100">
-                                <td className="border p-2 text-center">{client.id}</td>
-                                <td className="border p-2">{client.shortName || "No name"}</td>
-                                <td className="border p-2">{client.clientNumber || "No client number"}</td>
-                                <td className="border p-2">{client.regNumber || "No reg number"}</td>
-                                <td className="border p-2 text-center">
-                                    <CommonButton
-                                        onClick={() => handleOpenEditModal(client)}
-                                    >
-                                        Sửa
-                                    </CommonButton>
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan={5} className="border p-2 text-center">
-                                Không có dữ liệu
-                            </td>
-                        </tr>
-                    )}
-                    </tbody>
-                </table>
+                {/* Client List */}
+                <ClientList
+                    clients={clientsData}
+                    onEditClient={handleOpenEditModal}
+                    onCreateLiabilityContract={handleCreateLiabilityContract}
+                    onCreateIssuingContract={handleCreateIssuingContract}
+                    onCreateCardContract={handleCreateCardContract}
+                />
 
                 {/* Pagination */}
                 <div className="flex justify-center gap-4 mt-4">
@@ -192,18 +183,28 @@ export default function ClientPage() {
             </div>
 
             {/* EditModal */}
-            {editModal && (
+            {editClientModal && (
                 <EditModal
-                    onClose={() => dispatch({ type: 'CLOSE_EDIT_MODAL' })}
+                    onClose={() => dispatch({ type: "CLOSE_EDIT_MODAL" })}
                     subject="clients"
                     client={selectedClient}
                 />
             )}
 
             {/* CreateModal */}
-            {createModal && (
-                <CreateClientModal
-                    onClose={() => dispatch({ type: 'CLOSE_CREATE_CLIENT_MODAL' })}
+            {createClientModal && (
+                <CreateClientModal onClose={() => dispatch({ type: "CLOSE_CREATE_CLIENT_MODAL" })} />
+            )}
+            {createLiabContractModal && (
+                <CreateLiabContractModal
+                    onClose={() => dispatch({ type: "CLOSE_CREATE_LIAB_CONTRACT_MODAL" })}
+                    client={selectedClient}
+                />
+            )}
+            {createIssuingContractModal && (
+                <CreateIssuingContractModal
+                    onClose={() => dispatch({ type: "CLOSE_CREATE_ISSUING_CONTRACT_MODAL" })}
+                    client={selectedClient}
                 />
             )}
         </div>

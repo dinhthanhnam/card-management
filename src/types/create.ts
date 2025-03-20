@@ -54,7 +54,63 @@ export interface CreateClientInObject {
 
 // Định nghĩa interface cho CreateClientV4
 export interface CreateClientV4 {
-    reason: string;
+    reason?: string;
     createClientInObject: CreateClientInObject;
     setCustomDataInObjects: SetCustomDataInObject[];
+}
+
+export interface CreateContractV2 {
+    clientSearchMethod: string;
+    clientIdentifier: string;
+    reason?: string;
+    createContractInObject: CreateContractInObject;
+    setCustomDataInObjects: SetCustomDataInObject[];
+}
+
+export interface CreateContractInObject {
+    institutionCode: string;
+    branch: string;
+    productCode: string;
+    productCode2?: string;
+    productCode3?: string;
+    contractName: "Liability Contract" | "Issuing Contract" | "Card Contract";
+    cbsNumber?: string;
+}
+
+export interface CreateIssuingContractWithLiabilityV2 {
+    liabCategory: string;
+    liabSearchMethod: string;
+    liabContractIdentifier: string;
+    clientSearchMethod: string;
+    clientIdentifier: string;
+    productCode: string;
+    productCode2?: string;
+    productCode3?: string;
+    createIssuingInObject: CreateIssuingInObject;
+}
+
+export interface CreateIssuingInObject {
+    institutionCode: string;
+    branch: string;
+    contractName: "Liability Contract" | "Issuing Contract" | "Card Contract";
+    cbsNumber?: string;
+    addInfo01?: string;
+    addInfo02?: string;
+}
+
+export interface CreateCardV3 {
+    contractSearchMethod: string;
+    contractIdentifier: string;
+    productCode: string;
+    productCode2?: string;
+    productCode3?: string;
+    createCardInObject: CreateCardInObject;
+}
+
+export interface CreateCardInObject {
+    cardName: string;
+    cbsNumber?: string;
+    embossedFirstName: string;
+    embossedLastName: string;
+    embossedCompanyName?: string;
 }

@@ -2,7 +2,7 @@
 import React, { useReducer, useCallback, ChangeEvent } from "react";
 import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { FormSelect } from "@/components/common/FormSelect";
-import { CommonButton } from "@/components/common/CommonButton";
+import CommonButton from "@/components/common/CommonButton";
 import SearchBar from "@/components/common/SearchBar";
 import CreateModal from "@/components/modal/CreateModal";
 import { ContractFields } from "@/components/ContractFields";
@@ -237,15 +237,15 @@ export default function ContractPage() {
                         </div>
                     )}
 
-                    {createModal && (
-                        <CreateModal
-                            onClose={() => {
-                                    dispatch({ type: "SET_CREATE_MODAL", payload: false });
-                                    dispatch({ type: "SET_SUBJECT", payload: "" });
-                            }}
-                            subject={subject}
-                        />
-                    )}
+                    {/*{createModal && (*/}
+                    {/*    <CreateModal*/}
+                    {/*        onClose={() => {*/}
+                    {/*                dispatch({ type: "SET_CREATE_MODAL", payload: false });*/}
+                    {/*                dispatch({ type: "SET_SUBJECT", payload: "" });*/}
+                    {/*        }}*/}
+                    {/*        subject={subject}*/}
+                    {/*    />*/}
+                    {/*)}*/}
             </div>
         );
 }
