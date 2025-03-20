@@ -1,5 +1,5 @@
 // components/modal/CreateModalConfig.ts
-import { ClientFormData, CardFormData, ContractFormData, IssuingContractFormData } from "@/type/CreateFormData";
+import { ClientFormData, CardFormData, ContractFormData, IssuingContractFormData } from "@/types/CreateFormData";
 
 interface FieldConfig<T> {
     id: keyof T; // Key của field trong FormData
@@ -55,9 +55,9 @@ export const ENTITY_CONFIGS: {
                 branch: data.branch,
             },
             setCustomDataInObjects: data.customData.map((item) => ({
-                addInfoType: item.type,
-                tagName: item.name,
-                tagValue: item.value,
+                addInfoType: item.addInfoType,
+                tagName: item.tagName,
+                tagValue: item.tagValue,
             })),
         }),
     },
@@ -85,9 +85,9 @@ export const ENTITY_CONFIGS: {
                 CardName: data.cardName,
             },
             setCustomDataInObjects: data.customData.map((item) => ({
-                addInfoType: item.type,
-                tagName: item.name,
-                tagValue: item.value,
+                addInfoType: item.addInfoType,
+                tagName: item.tagName,
+                tagValue: item.tagValue,
             })),
         }),
     },
@@ -119,9 +119,9 @@ export const ENTITY_CONFIGS: {
                 contractName: data.contractName,
             },
             setCustomDataInObjects: data.customData.map((item) => ({
-                addInfoType: item.type,
-                tagName: item.name,
-                tagValue: item.value,
+                addInfoType: item.addInfoType,
+                tagName: item.tagName,
+                tagValue: item.tagValue,
             })),
         }),
     },
@@ -152,9 +152,9 @@ export const ENTITY_CONFIGS: {
                 contractName: data.contractName,
             },
             setCustomDataInObjects: data.customData.map((item) => ({
-                addInfoType: item.type,
-                tagName: item.name,
-                tagValue: item.value,
+                addInfoType: item.addInfoType,
+                tagName: item.tagName,
+                tagValue: item.tagValue,
             })),
         }),
     },

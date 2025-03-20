@@ -4,7 +4,7 @@ import { AsteriskIcon } from "lucide-react";
 // Định nghĩa kiểu dữ liệu cho props
 interface FormInputProps {
     label: string;
-    type?: "text" | "password" | "email" | "number" | "date"; // Hạn chế các giá trị hợp lệ cho type
+    type?: "text" | "password" | "email" | "number" | "date"; // Hạn chế các giá trị hợp lệ cho types
     name?: string;
     value?: string | number; // Hỗ trợ cả string và number
     disable?: boolean;
@@ -14,7 +14,7 @@ interface FormInputProps {
     required?: boolean;
 }
 
-export function FormInput ({
+export default function FormInput ({
                                                  label,
                                                  type = "text",
                                                  name,

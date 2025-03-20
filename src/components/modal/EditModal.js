@@ -1,16 +1,16 @@
 import { X, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import FormInput from "@/components/common/FormInput";
-import CommonButton from "@/components/common/CommonButtom"; // Giả định tên đúng là CommonButton
+import CommonButton from "@/components/common/CommonButton"; // Giả định tên đúng là CommonButton
 import { editClient, editContract } from "@/utils/EditService"; // Giả định hàm gửi request chỉnh sửa
 
 // Các config cho từng loại đối tượng
 const ENTITY_CONFIGS = {
     clients: {
-        title: "Edit Client",
+        title: "Edit GetClient",
         fields: [
-            { id: "clientSearchMethod", label: "Client Search Method", path: "clientSearchMethod", placeholder: "CLIENT_NUMBER", required: true },
-            { id: "clientIdentifier", label: "Client Identifier", path: "clientIdentifier", placeholder: "Client Number", required: true },
+            { id: "clientSearchMethod", label: "GetClient Search Method", path: "clientSearchMethod", placeholder: "CLIENT_NUMBER", required: true },
+            { id: "clientIdentifier", label: "GetClient Identifier", path: "clientIdentifier", placeholder: "GetClient Number", required: true },
             { id: "reason", label: "Reason", path: "reason", placeholder: "Edit client" },
             { id: "editClientInObject.shortName", label: "Short Name", path: "editClientInObject.shortName" },
             { id: "editClientInObject.firstName", label: "First Name", path: "editClientInObject.firstName" },
@@ -20,8 +20,8 @@ const ENTITY_CONFIGS = {
             { id: "editClientInObject.branch", label: "Branch", path: "editClientInObject.branch", placeholder: "0101" },
             { id: "editClientInObject.mobilePhone", label: "Mobile Phone", path: "editClientInObject.mobilePhone", placeholder: "10 digits" },
             { id: "editClientInObject.identityCardNumber", label: "Identity Card Number", path: "editClientInObject.identityCardNumber", placeholder: "10 digits" },
-            { id: "editClientInObject.clientNumber", label: "Client Number", path: "editClientInObject.clientNumber", placeholder: "13 digits" },
-            { id: "editClientInObject.clientTypeCode", label: "Client Type Code", path: "editClientInObject.clientTypeCode", placeholder: "PR" },
+            { id: "editClientInObject.clientNumber", label: "GetClient Number", path: "editClientInObject.clientNumber", placeholder: "13 digits" },
+            { id: "editClientInObject.clientTypeCode", label: "GetClient Type Code", path: "editClientInObject.clientTypeCode", placeholder: "PR" },
             { id: "editClientInObject.individualTaxpayerNumber", label: "Individual Taxpayer Number", path: "editClientInObject.individualTaxpayerNumber", placeholder: "12 digits" },
             { id: "editClientInObject.addressLine1", label: "Address Line 1", path: "editClientInObject.addressLine1", placeholder: "Ha Noi Viet Nam" },
             { id: "editClientInObject.citizenship", label: "Citizenship", path: "editClientInObject.citizenship", placeholder: "VNM" },

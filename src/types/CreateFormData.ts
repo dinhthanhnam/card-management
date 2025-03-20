@@ -37,7 +37,7 @@ export interface IssuingContractFormData {
 }
 
 export interface CustomData {
-    type: string;
-    name: string;
-    value: string;
+    addInfoType: string;
+    tagName: string;
+    tagValue: string;
 }

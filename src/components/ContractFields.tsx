@@ -1,7 +1,7 @@
 // components/ContractFields.tsx
 import React from "react";
 import {FormInput} from "@/components/common/FormInput";
-import {Contract} from "@/type/Contract";
+import {Contract} from "@/types/Contract";
 
 interface ContractFieldsProps {
     contract: Contract;
@@ -14,8 +14,8 @@ export function ContractFields({contract, onChange}: ContractFieldsProps) {
             <FormInput label="Institution" value={contract.institution || "N/A"} disabled/>
             <FormInput label="Branch" value={contract.branch || ""}
                        onChange={(e) => onChange("branch", e.target.value)}/>
-            <FormInput label="Client Category" value={contract.clientCategory || "N/A"} disabled/>
-            <FormInput label="Client Type" value={contract.clientType || "N/A"} disabled/>
+            <FormInput label="GetClient Category" value={contract.clientCategory || "N/A"} disabled/>
+            <FormInput label="GetClient Type" value={contract.clientType || "N/A"} disabled/>
             <FormInput label="Product Category" value={contract.productCategory || "N/A"} disabled/>
             <FormInput label="Redefined Product Category" value={contract.redefinedProductCategory || "N/A"} disabled/>
             <FormInput label="Contract Category" value={contract.contractCategory || "N/A"} disabled/>
@@ -36,7 +36,7 @@ export function ContractFields({contract, onChange}: ContractFieldsProps) {
             <FormInput label="Total Due" value={contract.totalDue || "N/A"} disabled/>
             <FormInput label="Past Due" value={contract.pastDue || "N/A"} disabled/>
             <FormInput label="Shadow Auth Limit" value={contract.shadowAuthLimit || "N/A"} disabled/>
-            <FormInput label="Client" value={contract.client || "N/A"} disabled/>
+            <FormInput label="GetClient" value={contract.client || "N/A"} disabled/>
             <FormInput
                 label="Contract Number"
                 value={contract.contractNumber || ""}
@@ -73,7 +73,7 @@ export function ContractFields({contract, onChange}: ContractFieldsProps) {
             <FormInput label="Amendment Date" value={contract.amendmentDate || "N/A"} disabled/>
             <FormInput label="Amendment Officer" value={contract.amendmentOfficer || "N/A"} disabled/>
             <FormInput label="ID" value={contract.id || "N/A"} disabled/>
-            <FormInput label="Client Full Name" value={contract.clientFullName || "N/A"} disabled/>
+            <FormInput label="GetClient Full Name" value={contract.clientFullName || "N/A"} disabled/>
             <FormInput label="Product Code" value={contract.productCode || "N/A"} disabled/>
             <FormInput label="Main Product Code" value={contract.mainProductCode || "N/A"} disabled/>
             <FormInput

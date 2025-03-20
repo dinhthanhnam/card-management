@@ -1,7 +1,7 @@
 // hooks/useSaveContract.ts
 import { useState, useCallback } from "react";
 import api from "@/utils/axiosinstance";
-import { Contract } from "@/type/Contract";
+import { Contract } from "@/types/Contract";
 
 interface SaveContractResult {
     isSaving: boolean;

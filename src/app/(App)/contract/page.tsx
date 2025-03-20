@@ -2,13 +2,13 @@
 import React, { useReducer, useCallback, ChangeEvent } from "react";
 import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { FormSelect } from "@/components/common/FormSelect";
-import { CommonButton } from "@/components/common/CommonButtom";
+import { CommonButton } from "@/components/common/CommonButton";
 import SearchBar from "@/components/common/SearchBar";
 import CreateModal from "@/components/modal/CreateModal";
 import { ContractFields } from "@/components/ContractFields";
 import {useSaveContract} from "@/hook/useSaveContract";
 import {useFetchContracts} from "@/hook/useFetchContracts";
-import { Contract } from "@/type/Contract";
+import { Contract } from "@/types/Contract";
 
 interface State {
         searchType: "contractNumber" | "client";

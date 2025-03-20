@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import FormInput from "@/components/common/FormInput";
-import CommonBottom from "@/components/common/CommonButtom";
+import CommonBottom from "@/components/common/CommonButton";
 
 export default function ReadModal({ onClose, subject, data}) {
     const modalRef = useRef();

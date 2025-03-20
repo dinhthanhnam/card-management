@@ -1,18 +1,10 @@
 "use client";
 import React, { useReducer, useEffect } from "react";
 import { fetchClient } from "@/utils/fetchclient";
-import { CommonButton } from "@/components/common/CommonButtom";
+import CommonButton from "@/components/common/CommonButton";
 import EditModal from "@/components/modal/EditModal";
-import CreateModal from "@/components/modal/CreateModal";
+import CreateClientModal from "@/components/modal/CreateClientModal";
 
-// Define interface for a client
-interface Client {
-    id: number;
-    shortName?: string;
-    clientNumber?: string;
-    regNumber?: string;
-    [key: string]: any; // For any additional properties
-}
 
 // Define state interface
 interface State {
@@ -31,8 +23,8 @@ type Action =
 | { type: 'SET_CURRENT_PAGE'; payload: number }
 | { type: 'OPEN_EDIT_MODAL'; payload: Client }
 | { type: 'CLOSE_EDIT_MODAL' }
-| { type: 'OPEN_CREATE_MODAL' }
-| { type: 'CLOSE_CREATE_MODAL' };
+| { type: 'OPEN_CREATE_CLIENT_MODAL' }
+| { type: 'CLOSE_CREATE_CLIENT_MODAL' };
 
 // Initial state
 const initialState: State = {
@@ -64,11 +56,11 @@ const reducer = (state: State, action: Action): State => {
             return {
                 ...state, editModal: false, selectedClient: null,
             };
-        case 'OPEN_CREATE_MODAL':
+        case 'OPEN_CREATE_CLIENT_MODAL':
             return {
                 ...state, createModal: true,
             };
-        case 'CLOSE_CREATE_MODAL':
+        case 'CLOSE_CREATE_CLIENT_MODAL':
             return {
                 ...state, createModal: false,
             };
@@ -123,7 +115,7 @@ export default function ClientPage() {
 
     // Handle opening create modal
     const handleOpenCreateModal = () => {
-        dispatch({ type: 'OPEN_CREATE_MODAL' });
+        dispatch({ type: 'OPEN_CREATE_CLIENT_MODAL' });
     };
 
     return (
@@ -143,10 +135,10 @@ export default function ClientPage() {
                 <table className="w-full container border-collapse border border-gray-300 mt-4">
                     <thead>
                     <tr className="bg-gray-100">
-                        <th className="border p-2">ID</th>
-                        <th className="border p-2">Short Name</th>
-                        <th className="border p-2">Client Number</th>
-                        <th className="border p-2">Reg Number</th>
+                        <th className="border p-2">Mã khách hàng</th>
+                        <th className="border p-2">Tên ngắn</th>
+                        <th className="border p-2">Số khách hàng</th>
+                        <th className="border p-2">Số đăng ký</th>
                         <th className="border p-2">Hành động</th>
                     </tr>
                     </thead>
@@ -210,9 +202,8 @@ export default function ClientPage() {
 
             {/* CreateModal */}
             {createModal && (
-                <CreateModal
-                    onClose={() => dispatch({ type: 'CLOSE_CREATE_MODAL' })}
-                    subject="clients"
+                <CreateClientModal
+                    onClose={() => dispatch({ type: 'CLOSE_CREATE_CLIENT_MODAL' })}
                 />
             )}
         </div>

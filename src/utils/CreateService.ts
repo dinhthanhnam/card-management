@@ -1,14 +1,26 @@
 import api from "@/utils/axiosinstance";
+import {CreateClientV4} from "@/types/create";
 
-export const createClient = async (payload) => {
+// export const createClient = async (payload) => {
+//     try {
+//         const res = await api.post("/clients/create", payload);
+//         return res.data;
+//     } catch (error) {
+//         console.log(error);
+//         throw error;
+//     }
+//
+// };
+
+// utils/CreateService.ts
+export const createClient = async (payload: CreateClientV4) => {
     try {
         const res = await api.post("/clients/create", payload);
         return res.data;
-    } catch (error) {
+    } catch(error) {
         console.log(error);
         throw error;
     }
-
 };
 
 export const createCard = async (payload) => {

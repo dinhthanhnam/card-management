@@ -1,5 +1,5 @@
 import api from "@/utils/axiosinstance";
-import { Contract } from "@/type/Contract"; // Giả sử bạn đã định nghĩa interface Contract
+import { Contract } from "@/types/Contract"; // Giả sử bạn đã định nghĩa interface Contract
 
 // Interface chung cho dữ liệu trả về từ API
 interface ApiResponse {

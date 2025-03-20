@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Plus, Trash2 } from "lucide-react";
 import { ENTITY_CONFIGS } from "./CreateModalConfig";
-import { ClientFormData, CardFormData, ContractFormData, IssuingContractFormData, CustomData } from "@/type/CreateFormData";
+import { ClientFormData, CardFormData, ContractFormData, IssuingContractFormData, CustomData } from "@/types/CreateFormData";
 import {
     createClient,
     createCard,

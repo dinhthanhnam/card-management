@@ -2,7 +2,7 @@
 import { useState, useCallback } from "react";
 import { fetchContractByNumber, fetchContractsByClient } from "@/utils/fetchcontract";
 import debounce from "lodash/debounce";
-import { Contract } from "@/type/Contract";
+import { Contract } from "@/types/Contract";
 
 interface FetchContractsResult {
     contracts: Contract[];

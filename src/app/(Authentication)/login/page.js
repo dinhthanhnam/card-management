@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import {usePathname, useRouter} from "next/navigation";
 import OpenwayLogo from "@/components/static/OpenwayLogo";
-import CommonBottom from "@/components/common/CommonButtom";
+import CommonBottom from "@/components/common/CommonButton";
 import FormInput from "@/components/common/FormInput";
 import { login } from "@/utils/login";
 

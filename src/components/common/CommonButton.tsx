@@ -8,7 +8,7 @@ interface CommonButtonProps {
     disabled?: boolean
 }
 
-export function CommonButton({
+export default function CommonButton({
                                  children,
                                  className = '',
                                  onClick,
