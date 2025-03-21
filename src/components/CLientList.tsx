@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import CommonButton from "@/components/common/CommonButton";
 import { Client, Contract } from "@/types/client";
 import { fetchBasicClientContracts } from "@/utils/fetchbasicclientcontracts";
+import CreateLiabContractModal from "@/components/modal/CreateLiabContractModal";
+import CreateIssuingContractModal from "@/components/modal/CreateIssuingContractModal";
+import CreateCardContractModal from "@/components/modal/CreateCardContractModal";
 
 interface ClientListProps {
     clients: Client[];
@@ -18,8 +21,11 @@ export default function ClientList({
                                        onCreateIssuingContract,
                                        onCreateCardContract,
                                    }: ClientListProps) {
-    const [expandedClient, setExpandedClient] = useState<Client | null>(null); // Sửa thành Client | null để hỗ trợ null
+    const [expandedClient, setExpandedClient] = useState<Client | null>(null);
     const [clientContracts, setClientContracts] = useState<Map<string, Contract[]>>(new Map());
+    const [showLiabModal, setShowLiabModal] = useState<Client | null>(null);
+    const [showIssuingModal, setShowIssuingModal] = useState<{ client: Client; parentContract: Contract } | null>(null);
+    const [showCardModal, setShowCardModal] = useState<Contract | null>(null); // issuingContractId
 
     const toggleClient = async (client: Client) => {
         if (expandedClient === client) {
@@ -28,7 +34,7 @@ export default function ClientList({
             setExpandedClient(client);
             try {
                 const contracts = await fetchBasicClientContracts(client);
-                setClientContracts((prev) => new Map(prev).set(client.id, contracts)); // Dùng client.id làm key
+                setClientContracts((prev) => new Map(prev).set(client.id, contracts));
             } catch (error) {
                 console.error("Error fetching contracts:", error);
             }
@@ -52,7 +58,11 @@ export default function ClientList({
                             <div className="w-1/2">
                                 <CommonButton
                                     className="!text-sm"
-                                    onClick={(e) => handleButtonClick(e, () => onCreateIssuingContract(client, contract))}
+                                    onClick={(e) =>
+                                        handleButtonClick(e, () =>
+                                            setShowIssuingModal({ client, parentContract: contract })
+                                        )
+                                    }
                                 >
                                     Tạo HĐPH
                                 </CommonButton>
@@ -63,7 +73,7 @@ export default function ClientList({
                                 <CommonButton
                                     className="!text-sm"
                                     onClick={(e) =>
-                                        handleButtonClick(e, () => onCreateCardContract(contract.contractNumber))
+                                        handleButtonClick(e, () => setShowCardModal(contract))
                                     }
                                 >
                                     Tạo HĐ thẻ
@@ -72,7 +82,7 @@ export default function ClientList({
                         )}
                     </div>
                 </div>
-                {contract.subContracts?.length > 0 && renderContracts(contract.subContracts, level + 1, client)}
+                {contract.subContracts?.length > 0 && renderContracts(contract.subContracts, level +1, client)}
             </div>
         ));
     };
@@ -107,7 +117,7 @@ export default function ClientList({
                                 </CommonButton>
                                 <CommonButton
                                     className="text-sm"
-                                    onClick={(e) => handleButtonClick(e, () => onCreateLiabilityContract(client))}
+                                    onClick={(e) => handleButtonClick(e, () => setShowLiabModal(client))}
                                 >
                                     Thêm HĐDB
                                 </CommonButton>
@@ -121,9 +131,7 @@ export default function ClientList({
                                 ) : client.contracts?.length > 0 ? (
                                     renderContracts(client.contracts, 0, client)
                                 ) : (
-                                    <div className="p-2 text-center text-gray-500">
-                                        Chưa có hợp đồng đảm bảo
-                                    </div>
+                                    <div className="p-2 text-center text-gray-500">Chưa có hợp đồng đảm bảo</div>
                                 )}
                             </div>
                         )}
@@ -131,6 +139,26 @@ export default function ClientList({
                 ))
             ) : (
                 <div className="p-2 text-center text-gray-500">Không có dữ liệu</div>
+            )}
+
+            {showLiabModal && (
+                <CreateLiabContractModal
+                    onClose={() => setShowLiabModal(null)}
+                    client={showLiabModal}
+                />
+            )}
+            {showIssuingModal && (
+                <CreateIssuingContractModal
+                    onClose={() => setShowIssuingModal(null)}
+                    client={showIssuingModal.client}
+                    parentContract={showIssuingModal.parentContract}
+                />
+            )}
+            {showCardModal && (
+                <CreateCardContractModal
+                    onClose={() => setShowCardModal(null)}
+                    parentContract={showCardModal}
+                />
             )}
         </div>
     );

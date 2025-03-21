@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import FormInput from "@/components/common/FormInput";
 import CommonButton from "@/components/common/CommonButton";
 import { CreateIssuingContractWithLiabilityV2, CreateIssuingInObject } from "@/types/create";
-import { createContract } from "@/utils/CreateService";
+import {createContract, createIssuingContractWithLiability} from "@/utils/CreateService";
 import {Contract, Client} from "@/types/client";
 
 interface CreateIssuingContractModalProps {
@@ -12,14 +12,14 @@ interface CreateIssuingContractModalProps {
     parentContract?: Contract;
 }
 
-export default function CreateIssuingContractModal({ onClose, client }: CreateIssuingContractModalProps) {
+export default function CreateIssuingContractModal({ onClose, client, parentContract}: CreateIssuingContractModalProps) {
     const modalRef = useRef<HTMLDivElement>(null);
     const [formData, setFormData] = useState<CreateIssuingContractWithLiabilityV2>({
         productCode: "ISSUING_TRAINING01", productCode2: "", productCode3: "",
-        clientIdentifier: client.clientNumber || "",
+        clientIdentifier: client?.clientNumber || "",
         clientSearchMethod: "CLIENT_NUMBER",
-        liabContractIdentifier:"",
-        liabSearchMethod: "CONTRACT_NUMBER",
+        liabContractIdentifier: parentContract?.contractNumber || "",
+        liabContractSearchMethod: "CONTRACT_NUMBER",
         liabCategory: "Y",
         createIssuingInObject: {
             institutionCode: "0001",
@@ -32,6 +32,13 @@ export default function CreateIssuingContractModal({ onClose, client }: CreateIs
     const [message, setMessage] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
 
+    const handleKeyChange = (id: keyof CreateIssuingContractWithLiabilityV2, value: string) => {
+        setFormData((prev) => ({
+            ...prev,
+            [id]: value
+        }));
+    };
+
     const handleChange = (id: keyof CreateIssuingInObject, value: string) => {
         setFormData((prev) => ({
             ...prev,
@@ -41,7 +48,7 @@ export default function CreateIssuingContractModal({ onClose, client }: CreateIs
 
     const handleSubmit = async () => {
         try {
-            const response = await createContract(formData);
+            const response = await createIssuingContractWithLiability(formData);
             setMessage(response.message || "Tạo hợp đồng đảm bảo công!");
             setSuccess(response.success);
 
@@ -63,7 +70,7 @@ export default function CreateIssuingContractModal({ onClose, client }: CreateIs
     }, [onClose]);
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 max-h-screen">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 max-h-screen z-10">
             <div
                 ref={modalRef}
                 className="bg-white p-6 rounded-2xl w-full md:w-2/3 h-[90vh] flex flex-col relative"
@@ -76,7 +83,7 @@ export default function CreateIssuingContractModal({ onClose, client }: CreateIs
                 </button>
 
                 <div className="flex-1 flex flex-col overflow-hidden">
-                    <h2 className="text-xl font-bold mb-4 px-4">Tạo hợp đồng đảm bảo - Khách hàng số: #{client.clientNumber || ""}</h2>
+                    <h2 className="text-xl font-bold mb-4 px-4">Tạo hợp đồng phát hành {client? `- Khách hàng số # ${client.clientNumber}` : ""}</h2>
 
                     {message && (
                         <div
@@ -93,23 +100,22 @@ export default function CreateIssuingContractModal({ onClose, client }: CreateIs
                             <FormInput
                                 label="Hợp đồng đảm bảo"
                                 value={formData.liabCategory}
-                                onChange={(e) => (e.target.value)}
-                                placeholder="Tạo liab"
+                                onChange={(e) => handleKeyChange("liabCategory", e.target.value)}
+                                placeholder=""
                                 required
                             />
                             <FormInput
                                 label="Định danh khách hàng"
                                 value={formData.clientIdentifier}
-                                onChange={(e) => (e.target.value)}
+                                onChange={(e) => handleKeyChange("clientIdentifier", e.target.value)}
                                 required
                                 disable={!!client}
                             />
                             <FormInput
                                 label="Mã hợp đồng đảm bảo"
                                 value={formData.liabContractIdentifier}
-                                onChange={(e) => (e.target.value)}
+                                onChange={(e) => handleKeyChange("liabContractIdentifier", e.target.value)}
                                 required
-                                // disable={!!parentContract}
                             />
                             <FormInput
                                 label="Mã sản phẩm"

@@ -4,11 +4,12 @@ import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { FormSelect } from "@/components/common/FormSelect";
 import CommonButton from "@/components/common/CommonButton";
 import SearchBar from "@/components/common/SearchBar";
-import CreateModal from "@/components/modal/CreateModal";
 import { ContractFields } from "@/components/ContractFields";
 import {useSaveContract} from "@/hook/useSaveContract";
 import {useFetchContracts} from "@/hook/useFetchContracts";
 import { Contract } from "@/types/Contract";
+import CreateLiabContractModal from "@/components/modal/CreateLiabContractModal";
+import CreateIssuingContractModal from "@/components/modal/CreateIssuingContractModal";
 
 interface State {
         searchType: "contractNumber" | "client";
@@ -16,8 +17,9 @@ interface State {
         toggleSearch: boolean;
         selectedContractIndex: number;
         editedContract: Contract | null;
-        createModal: boolean;
-        subject: string;
+        createLiabContractModal: boolean;
+        createIssuingContractModal: boolean;
+        parentContract: Contract | null;
 }
 
 type Action =
@@ -26,8 +28,9 @@ type Action =
     | { type: "TOGGLE_SEARCH"; payload: boolean }
     | { type: "SET_SELECTED_INDEX"; payload: number }
     | { type: "SET_EDITED_CONTRACT"; payload: Contract | null }
-    | { type: "SET_CREATE_MODAL"; payload: boolean }
-    | { type: "SET_SUBJECT"; payload: string };
+    | { type: "SET_CREATE_LIAB_CONTRACT_MODAL"; payload: boolean }
+    | { type: "SET_CREATE_ISSUING_CONTRACT_MODAL"; payload: boolean }
+    | { type: "SET_PARENT_CONTRACT"; payload: Contract | null };
 
 const initialState: State = {
         searchType: "contractNumber",
@@ -35,8 +38,9 @@ const initialState: State = {
         toggleSearch: false,
         selectedContractIndex: -1,
         editedContract: null,
-        createModal: false,
-        subject: "",
+        createLiabContractModal: false,
+        createIssuingContractModal: false,
+        parentContract: null,
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -51,10 +55,12 @@ const reducer = (state: State, action: Action): State => {
                         return { ...state, selectedContractIndex: action.payload };
                 case "SET_EDITED_CONTRACT":
                         return { ...state, editedContract: action.payload };
-                case "SET_CREATE_MODAL":
-                        return { ...state, createModal: action.payload };
-                case "SET_SUBJECT":
-                        return { ...state, subject: action.payload };
+                case "SET_CREATE_LIAB_CONTRACT_MODAL":
+                        return { ...state, createLiabContractModal: action.payload };
+                case "SET_CREATE_ISSUING_CONTRACT_MODAL":
+                        return { ...state, createIssuingContractModal: action.payload };
+                case "SET_PARENT_CONTRACT":
+                        return { ...state, parentContract: action.payload };
                 default:
                         return state;
         }
@@ -62,7 +68,7 @@ const reducer = (state: State, action: Action): State => {
 
 export default function ContractPage() {
         const [state, dispatch] = useReducer(reducer, initialState);
-        const { searchType, searchText, toggleSearch, selectedContractIndex, editedContract, createModal, subject } = state;
+        const { searchType, searchText, toggleSearch, selectedContractIndex, editedContract, createLiabContractModal, createIssuingContractModal, parentContract } = state;
 
         const { contracts, isLoading, message: fetchMessage, success: fetchSuccess, fetchContracts } = useFetchContracts();
         const { isSaving, message: saveMessage, success: saveSuccess, saveContract } = useSaveContract();
@@ -157,20 +163,19 @@ export default function ContractPage() {
                             <CommonButton
                                 className="px-2 mx-2"
                                 onClick={() => {
-                                        dispatch({ type: "SET_SUBJECT", payload: "contracts" });
-                                        dispatch({ type: "SET_CREATE_MODAL", payload: true });
+                                        dispatch({ type: "SET_CREATE_LIAB_CONTRACT_MODAL", payload: true});
                                 }}
                             >
-                                    Create Contract
+                                    Tạo hợp đồng đảm bảo
                             </CommonButton>
                             <CommonButton
                                 className="px-2 mx-2"
                                 onClick={() => {
-                                        dispatch({ type: "SET_SUBJECT", payload: "issuingContract" });
-                                        dispatch({ type: "SET_CREATE_MODAL", payload: true });
+                                        // dispatch({ type: "SET_SUBJECT", payload: "issuingContract" });
+                                        dispatch({ type: "SET_CREATE_ISSUING_CONTRACT_MODAL", payload: true});
                                 }}
                             >
-                                    Create Issuing Contract with Liability
+                                    Tạo hợp đồng phát hành
                             </CommonButton>
                     </div>
 
@@ -246,6 +251,21 @@ export default function ContractPage() {
                     {/*        subject={subject}*/}
                     {/*    />*/}
                     {/*)}*/}
+                    {createLiabContractModal && (
+                        <CreateLiabContractModal
+                                onClose={() => {
+                                        dispatch({ type: "SET_CREATE_LIAB_CONTRACT_MODAL", payload: false })
+                                }}
+                        />
+                    )}
+
+                    {createIssuingContractModal && (
+                        <CreateIssuingContractModal
+                            onClose={() => {
+                                    dispatch({ type: "SET_CREATE_ISSUING_CONTRACT_MODAL", payload: false })
+                            }}
+                        />
+                    )}
             </div>
         );
 }

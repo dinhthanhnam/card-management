@@ -8,7 +8,7 @@ import SearchBar from "@/components/common/SearchBar";
 import {fetchClient} from "@/utils/fetchclient";
 import {fetchCard} from "@/utils/fetchcard";
 import CommonButton from "@/components/common/CommonButton";
-import CreateModal from "@/components/modal/CreateModal";
+import CreateCardContractModal from "@/components/modal/CreateCardContractModal";
 
 export default function CardPage() {
     const [searchType, setSearchType] = useState(null);
@@ -21,17 +21,6 @@ export default function CardPage() {
     const [lockedCards, setLockedCards] = useState({});
     const [cardsData, setCardsData] = useState({});
     const [createModal, setCreateModal] = useState(false);
-
-    // useEffect(() => {
-    //     const fetchCards = async() => {
-    //         try {
-    //             setCardsData(await fetchCard(null));
-    //         } catch (error) {
-    //             console.error("Error fetching cards:", error);
-    //         }
-    //     }
-    //     fetchCards();
-    // }, []);
 
     const toggleLock = (cardNumber) => {
         setLockedCards((prev) => ({
@@ -194,39 +183,6 @@ export default function CardPage() {
                         </tbody>
                     </table>
                 </div>
-                {/*{seeCardRelation && selectedCard && (*/}
-                {/*    <div className="container w-2/3 relative h-full">*/}
-                {/*        <button*/}
-                {/*            onClick={() => setSeeCardRelation(false)}*/}
-                {/*            className="absolute top-4 right-4 rounded-full hover:bg-gray-200"*/}
-                {/*        >*/}
-                {/*            <X className="cursor-pointer w-6 h-6"/>*/}
-                {/*        </button>*/}
-                {/*        <div>*/}
-                {/*            <h2 className="text-xl font-bold">Quan hệ</h2>*/}
-                {/*        </div>*/}
-                {/*        <table className="w-full border-collapse border my-3 border-gray-300">*/}
-                {/*            <thead>*/}
-                {/*            <tr className="bg-gray-100">*/}
-                {/*                <th className="border p-2">Chủ thẻ</th>*/}
-                {/*            </tr>*/}
-                {/*            </thead>*/}
-                {/*            <tbody>*/}
-                {/*            {selectedCard.cardholder ? (*/}
-                {/*                <tr key={selectedCard.cardNumber}*/}
-                {/*                    className={`cursor-pointer hover:bg-gray-100 text-center`}>*/}
-                {/*                    <td className="border p-2">{selectedCard.cardholder.name} | {selectedCard.cardholder.email}</td>*/}
-                {/*                </tr>*/}
-                {/*            ) : (*/}
-                {/*                <tr>*/}
-                {/*                    <td colSpan="5" className="border p-2 text-center">Không có quan hệ chủ thẻ</td>*/}
-                {/*                </tr>*/}
-                {/*            )}*/}
-                {/*            </tbody>*/}
-                {/*        </table>*/}
-                {/*    </div>*/}
-                {/*)}*/}
-
             </div>
 
             {isLimitModalOpen && selectedCard && (
@@ -259,9 +215,8 @@ export default function CardPage() {
                 </div>
             )}
             {createModal && (
-                <CreateModal
+                <CreateCardContractModal
                     onClose={() => setCreateModal(false)}
-                    subject={"cards"}
                 />
             )}
         </div>

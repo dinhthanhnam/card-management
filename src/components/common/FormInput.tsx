@@ -28,7 +28,7 @@ export default function FormInput ({
     return (
         <div className="mb-4">
             <div className="flex flex-row justify-between">
-                <label className="block text-gray-700 font-medium mb-1">{label}</label>
+                <label className={`block text-gray-700 font-medium mb-1`}>{label}</label>
                 {required && <AsteriskIcon size={18} className="text-red-500" />}
             </div>
 

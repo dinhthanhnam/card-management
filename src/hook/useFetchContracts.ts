@@ -1,8 +1,7 @@
-// hooks/useFetchContracts.ts
 import { useState, useCallback } from "react";
-import { fetchContractByNumber, fetchContractsByClient } from "@/utils/fetchcontract";
-import debounce from "lodash/debounce";
+import { debounce } from "lodash"; // Giả định bạn dùng lodash cho debounce
 import { Contract } from "@/types/Contract";
+import {fetchContractByNumber, fetchContractsByClient} from "@/utils/fetchcontract"; // Giả định kiểu Contract
 
 interface FetchContractsResult {
     contracts: Contract[];
@@ -13,7 +12,7 @@ interface FetchContractsResult {
 }
 
 export function useFetchContracts(): FetchContractsResult {
-    const [contracts, setContracts] = useState<Contract[]>([]);
+    const [contracts, setContracts] = useState<Contract[]>([]); // Luôn là mảng
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [success, setSuccess] = useState<boolean | null>(null);
@@ -33,7 +32,11 @@ export function useFetchContracts(): FetchContractsResult {
                     searchType === "contractNumber"
                         ? await fetchContractByNumber(searchText)
                         : await fetchContractsByClient(searchText);
-                setContracts(data.contracts);
+                // Chuẩn hóa: luôn trả về mảng, kể cả khi API trả về một Contract
+                const contractsArray = Array.isArray(data.contracts)
+                    ? data.contracts
+                    : [data.contracts];
+                setContracts(contractsArray);
                 setMessage(data.message);
                 setSuccess(data.success);
             } catch (error) {

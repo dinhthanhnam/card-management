@@ -79,7 +79,7 @@ export interface CreateContractInObject {
 
 export interface CreateIssuingContractWithLiabilityV2 {
     liabCategory: string;
-    liabSearchMethod: string;
+    liabContractSearchMethod: string;
     liabContractIdentifier: string;
     clientSearchMethod: string;
     clientIdentifier: string;

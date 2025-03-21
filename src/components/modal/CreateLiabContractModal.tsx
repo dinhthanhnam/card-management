@@ -14,7 +14,7 @@ interface CreateLiabContractModalProps {
 export default function CreateLiabContractModal({ onClose, client }: CreateLiabContractModalProps) {
     const modalRef = useRef<HTMLDivElement>(null);
     const [formData, setFormData] = useState<CreateContractV2>({
-        clientIdentifier: client.clientNumber || "",
+        clientIdentifier: client?.clientNumber || "",
         clientSearchMethod: "CLIENT_NUMBER",
         reason: "Tạo liab",
         createContractInObject: {
@@ -35,8 +35,11 @@ export default function CreateLiabContractModal({ onClose, client }: CreateLiabC
         }));
     };
 
-    const handleReasonChange = (value: string) => {
-        setFormData((prev) => ({ ...prev, reason: value }));
+    const handleKeyChange = (id: keyof CreateContractV2, value: string) => {
+        setFormData((prev) => ({
+            ...prev,
+            [id]: value
+        }));
     };
 
     const addCustomData = () => {
@@ -85,7 +88,7 @@ export default function CreateLiabContractModal({ onClose, client }: CreateLiabC
     }, [onClose]);
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 max-h-screen">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 max-h-screen z-10">
             <div
                 ref={modalRef}
                 className="bg-white p-6 rounded-2xl w-full md:w-2/3 h-[90vh] flex flex-col relative"
@@ -98,7 +101,7 @@ export default function CreateLiabContractModal({ onClose, client }: CreateLiabC
                 </button>
 
                 <div className="flex-1 flex flex-col overflow-hidden">
-                    <h2 className="text-xl font-bold mb-4 px-4">Tạo hợp đồng đảm bảo - Khách hàng số: #{client.clientNumber || ""}</h2>
+                    <h2 className="text-xl font-bold mb-4 px-4">Tạo hợp đồng đảm bảo {client? `- Khách hàng số # ${client.clientNumber}` : ""}</h2>
 
                     {message && (
                         <div
@@ -115,14 +118,14 @@ export default function CreateLiabContractModal({ onClose, client }: CreateLiabC
                             <FormInput
                                 label="Lý do"
                                 value={formData.reason}
-                                onChange={(e) => handleReasonChange(e.target.value)}
+                                onChange={(e) => handleKeyChange("reason" , e.target.value)}
                                 placeholder="Tạo liab"
                                 required
                             />
                             <FormInput
                                 label="Định danh khách hàng"
                                 value={formData.clientIdentifier}
-                                onChange={(e) => (e.target.value)}
+                                onChange={(e) => handleKeyChange("clientIdentifier" , e.target.value)}
                                 placeholder=""
                                 required
                             />

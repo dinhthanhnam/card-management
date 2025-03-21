@@ -6,21 +6,24 @@ interface ApiResponse {
     success: boolean;
     message: string;
     statusCode: number;
-    contracts: Contract[];
 }
 
 // Interface cho fetchContractByNumber (mảng contracts thường chỉ có 1 phần tử hoặc rỗng)
-interface FetchContractByNumberResult extends ApiResponse {}
+interface FetchContractByNumberResult extends ApiResponse {
+    contracts: Contract;
+}
 
 // Interface cho fetchContractsByClient (mảng contracts có thể có nhiều phần tử)
-interface FetchContractsByClientResult extends ApiResponse {}
+interface FetchContractsByClientResult extends ApiResponse {
+    contracts: Contract[];
+}
 
 export const fetchContractByNumber = async (contractNumber: string): Promise<FetchContractByNumberResult> => {
     try {
         const payload = {
             contractNumber: contractNumber, // Dựa trên GetContractByNumberV2
         };
-        const res = await api.post("/contracts/getContractByNumber", payload);
+        const res = await api.post<ApiResponse>("/contracts/getContractByNumber", payload);
         return res.data as FetchContractByNumberResult;
     } catch (error) {
         console.error("Error fetching contract by number:", error);

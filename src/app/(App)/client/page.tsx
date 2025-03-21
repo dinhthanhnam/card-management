@@ -2,28 +2,21 @@
 import React, { useReducer, useEffect } from "react";
 import { fetchClient } from "@/utils/fetchclient";
 import CommonButton from "@/components/common/CommonButton";
-import EditModal from "@/components/modal/EditModal";
 import CreateClientModal from "@/components/modal/CreateClientModal";
 import ClientList from "@/components/CLientList";
-import {Client, Contract} from "@/types/client"
-import CreateLiabContractModal from "@/components/modal/CreateLiabContractModal";
-import CreateIssuingContractModal from "@/components/modal/CreateIssuingContractModal";
+import { Client } from "@/types/client";
+import EditClientModal from "@/components/modal/EditClientModal";
 
-// Define state interface
 interface State {
     clientsData: Client[];
     currentPage: number;
     totalPages: number;
     editClientModal: boolean;
     createClientModal: boolean;
-    createLiabContractModal: boolean;
-    createIssuingContractModal: boolean;
-    createCardContractModal: boolean;
     selectedClient: Client | null;
     clientsPerPage: number;
 }
 
-// Define action types
 type Action =
     | { type: "FETCH_CLIENTS_SUCCESS"; payload: { clients: Client[]; totalPages: number } }
     | { type: "SET_CURRENT_PAGE"; payload: number }
@@ -31,29 +24,18 @@ type Action =
     | { type: "CLOSE_EDIT_MODAL" }
     | { type: "OPEN_CREATE_CLIENT_MODAL" }
     | { type: "CLOSE_CREATE_CLIENT_MODAL" }
-    | { type: "OPEN_CREATE_LIAB_CONTRACT_MODAL", payload: Client}
-    | { type: "CLOSE_CREATE_LIAB_CONTRACT_MODAL" }
-    | { type: "OPEN_CREATE_ISSUING_CONTRACT_MODAL", payload: Client}
-    | { type: "CLOSE_CREATE_ISSUING_CONTRACT_MODAL" }
-    | { type: "OPEN_CREATE_CARD_CONTRACT_MODAL" }
-    | { type: "CLOSE_CREATE_CARD_CONTRACT_MODAL" }
-    ;
+    | { type: "ADD_NEW_CLIENT"; payload: Client };
 
-// Initial state
 const initialState: State = {
     clientsData: [],
     currentPage: 0,
     totalPages: 0,
     editClientModal: false,
     createClientModal: false,
-    createLiabContractModal: false,
-    createIssuingContractModal: false,
-    createCardContractModal: false,
     selectedClient: null,
-    clientsPerPage: 10,
+    clientsPerPage: 8,
 };
 
-// Reducer function
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case "FETCH_CLIENTS_SUCCESS":
@@ -72,14 +54,8 @@ const reducer = (state: State, action: Action): State => {
             return { ...state, createClientModal: true };
         case "CLOSE_CREATE_CLIENT_MODAL":
             return { ...state, createClientModal: false };
-        case "OPEN_CREATE_LIAB_CONTRACT_MODAL":
-            return { ...state, createLiabContractModal: true, selectedClient: action.payload };
-        case "CLOSE_CREATE_LIAB_CONTRACT_MODAL":
-            return { ...state, createLiabContractModal: false, selectedClient: null };
-        case "OPEN_CREATE_ISSUING_CONTRACT_MODAL":
-            return { ...state, createIssuingContractModal: true, selectedClient: action.payload };
-        case "CLOSE_CREATE_ISSUING_CONTRACT_MODAL":
-            return { ...state, createIssuingContractModal: false, selectedClient: null };
+        case "ADD_NEW_CLIENT":
+            return { ...state, clientsData: [action.payload, ...state.clientsData] };
         default:
             return state;
     }
@@ -87,9 +63,9 @@ const reducer = (state: State, action: Action): State => {
 
 export default function ClientPage() {
     const [state, dispatch] = useReducer(reducer, initialState);
-    const { clientsData, currentPage, totalPages, editClientModal, createClientModal, createLiabContractModal, createIssuingContractModal, createCardContractModal, selectedClient, clientsPerPage } = state;
+    const { clientsData, currentPage, totalPages, editClientModal, createClientModal, selectedClient, clientsPerPage } =
+        state;
 
-    // Fetch clients data with pagination
     useEffect(() => {
         const fetchClientsData = async () => {
             try {
@@ -108,37 +84,23 @@ export default function ClientPage() {
         fetchClientsData();
     }, [currentPage, clientsPerPage]);
 
-    // Handle page change
     const handlePageChangeClients = (newPage: number) => {
         if (newPage >= 0 && newPage < totalPages) {
             dispatch({ type: "SET_CURRENT_PAGE", payload: newPage });
         }
     };
 
-    // Handle opening edit modal
     const handleOpenEditModal = (client: Client) => {
         dispatch({ type: "OPEN_EDIT_MODAL", payload: client });
     };
 
-    // Handle opening create modal
     const handleOpenCreateModal = () => {
         dispatch({ type: "OPEN_CREATE_CLIENT_MODAL" });
     };
 
-    // Handle creating liability contract (placeholder)
-    const handleCreateLiabilityContract = (client: Client) => {
-        dispatch({ type: "OPEN_CREATE_LIAB_CONTRACT_MODAL", payload: client});
-    };
-
-    // Handle creating issuing contract (placeholder)
-    const handleCreateIssuingContract = (client: Client) => {
-        dispatch({ type: "OPEN_CREATE_ISSUING_CONTRACT_MODAL", payload: client});
-    };
-
-    // Handle creating card contract (placeholder)
-    const handleCreateCardContract = (issuingContractId: string) => {
-        console.log(`Tạo hợp đồng thẻ cho hợp đồng phát hành ${issuingContractId}`);
-        // Logic tạo hợp đồng thẻ ở đây
+    const handleClientCreated = (newClient: Client) => {
+        dispatch({ type: "ADD_NEW_CLIENT", payload: newClient });
+        dispatch({ type: "CLOSE_CREATE_CLIENT_MODAL" });
     };
 
     return (
@@ -151,16 +113,14 @@ export default function ClientPage() {
                     </CommonButton>
                 </div>
 
-                {/* Client List */}
                 <ClientList
                     clients={clientsData}
                     onEditClient={handleOpenEditModal}
-                    onCreateLiabilityContract={handleCreateLiabilityContract}
-                    onCreateIssuingContract={handleCreateIssuingContract}
-                    onCreateCardContract={handleCreateCardContract}
+                    onCreateLiabilityContract={() => {}} // Placeholder, không dùng ở đây
+                    onCreateIssuingContract={() => {}} // Placeholder, không dùng ở đây
+                    onCreateCardContract={() => {}} // Placeholder, không dùng ở đây
                 />
 
-                {/* Pagination */}
                 <div className="flex justify-center gap-4 mt-4">
                     <button
                         onClick={() => handlePageChangeClients(currentPage - 1)}
@@ -169,9 +129,7 @@ export default function ClientPage() {
                     >
                         Quay lại
                     </button>
-                    <span className="flex items-center">
-                        Trang {currentPage + 1} / {totalPages}
-                    </span>
+                    <span className="flex items-center">Trang {currentPage + 1} / {totalPages}</span>
                     <button
                         onClick={() => handlePageChangeClients(currentPage + 1)}
                         disabled={currentPage === totalPages - 1}
@@ -182,29 +140,19 @@ export default function ClientPage() {
                 </div>
             </div>
 
-            {/* EditModal */}
             {editClientModal && (
-                <EditModal
-                    onClose={() => dispatch({ type: "CLOSE_EDIT_MODAL" })}
-                    subject="clients"
+                <EditClientModal
+                    onClose={() => dispatch({type: "CLOSE_EDIT_MODAL"})}
                     client={selectedClient}
+                    onEditClient={function (client: Client): void {
+                    throw new Error("Function not implemented.");
+                }}
                 />
             )}
-
-            {/* CreateModal */}
             {createClientModal && (
-                <CreateClientModal onClose={() => dispatch({ type: "CLOSE_CREATE_CLIENT_MODAL" })} />
-            )}
-            {createLiabContractModal && (
-                <CreateLiabContractModal
-                    onClose={() => dispatch({ type: "CLOSE_CREATE_LIAB_CONTRACT_MODAL" })}
-                    client={selectedClient}
-                />
-            )}
-            {createIssuingContractModal && (
-                <CreateIssuingContractModal
-                    onClose={() => dispatch({ type: "CLOSE_CREATE_ISSUING_CONTRACT_MODAL" })}
-                    client={selectedClient}
+                <CreateClientModal
+                    onClose={() => dispatch({ type: "CLOSE_CREATE_CLIENT_MODAL" })}
+                    onClientCreated={handleClientCreated}
                 />
             )}
         </div>
