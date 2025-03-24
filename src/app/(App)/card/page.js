@@ -9,6 +9,8 @@ import {fetchClient} from "@/utils/fetchclient";
 import {fetchCard} from "@/utils/fetchcard";
 import CommonButton from "@/components/common/CommonButton";
 import CreateCardContractModal from "@/components/modal/CreateCardContractModal";
+import ActivateCardModal from "@/components/modal/ActivateCardModal";
+import SetCardStatusModal from "@/components/modal/SetCardStatusModal";
 
 export default function CardPage() {
     const [searchType, setSearchType] = useState(null);
@@ -21,7 +23,8 @@ export default function CardPage() {
     const [lockedCards, setLockedCards] = useState({});
     const [cardsData, setCardsData] = useState({});
     const [createModal, setCreateModal] = useState(false);
-
+    const [activateModal, setActivateModal] = useState(false);
+    const [setStatusModal, setSetStatusModal] = useState(false);
     const toggleLock = (cardNumber) => {
         setLockedCards((prev) => ({
             ...prev,
@@ -113,7 +116,21 @@ export default function CardPage() {
                     <CommonButton className={`px-2 mx-2`}
                                   onClick={() => setCreateModal(true)}
                     >
-                        Create Card
+                        Tạo thẻ
+                    </CommonButton>
+                </div>
+                <div>
+                    <CommonButton className={`px-2 mx-2`}
+                                  onClick={() => setActivateModal(true)}
+                    >
+                        Kích hoạt thẻ
+                    </CommonButton>
+                </div>
+                <div>
+                    <CommonButton className={`px-2 mx-2`}
+                                  onClick={() => setSetStatusModal(true)}
+                    >
+                        Thay đổi trạng thái thẻ
                     </CommonButton>
                 </div>
             </div>
@@ -217,6 +234,16 @@ export default function CardPage() {
             {createModal && (
                 <CreateCardContractModal
                     onClose={() => setCreateModal(false)}
+                />
+            )}
+            {activateModal && (
+                <ActivateCardModal
+                    onClose={() => setActivateModal(false)}
+                />
+            )}
+            {setStatusModal && (
+                <SetCardStatusModal
+                    onClose={() => setSetStatusModal(false)}
                 />
             )}
         </div>

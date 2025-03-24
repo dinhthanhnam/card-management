@@ -5,6 +5,8 @@ import { fetchBasicClientContracts } from "@/utils/fetchbasicclientcontracts";
 import CreateLiabContractModal from "@/components/modal/CreateLiabContractModal";
 import CreateIssuingContractModal from "@/components/modal/CreateIssuingContractModal";
 import CreateCardContractModal from "@/components/modal/CreateCardContractModal";
+import ActivateCardModal from "@/components/modal/ActivateCardModal";
+import SetCardStatusModal from "@/components/modal/SetCardStatusModal";
 
 interface ClientListProps {
     clients: Client[];
@@ -26,6 +28,8 @@ export default function ClientList({
     const [showLiabModal, setShowLiabModal] = useState<Client | null>(null);
     const [showIssuingModal, setShowIssuingModal] = useState<{ client: Client; parentContract: Contract } | null>(null);
     const [showCardModal, setShowCardModal] = useState<Contract | null>(null); // issuingContractId
+    const [showActivateCardModal, setShowActivateCardModal] = useState<Contract | null>(null);
+    const [showSetCardStatusModal, setShowSetCardStatusModal] = useState<Contract | null>(null);
 
     const toggleClient = async (client: Client) => {
         if (expandedClient === client) {
@@ -78,6 +82,30 @@ export default function ClientList({
                                 >
                                     Tạo HĐ thẻ
                                 </CommonButton>
+                            </div>
+                        )}
+                        {contract.contractType === "Card" && (
+                            <div>
+                                <div className="w-1/2">
+                                    <CommonButton
+                                        className="!text-sm"
+                                        onClick={(e) =>
+                                            handleButtonClick(e, () => setShowActivateCardModal(contract))
+                                        }
+                                    >
+                                        Kích hoạt
+                                    </CommonButton>
+                                </div>
+                                <div className="w-1/2">
+                                    <CommonButton
+                                        className="!text-sm"
+                                        onClick={(e) =>
+                                            handleButtonClick(e, () => setShowSetCardStatusModal(contract))
+                                        }
+                                    >
+                                        Đổi trạng thái
+                                    </CommonButton>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -158,6 +186,18 @@ export default function ClientList({
                 <CreateCardContractModal
                     onClose={() => setShowCardModal(null)}
                     parentContract={showCardModal}
+                />
+            )}
+            {showActivateCardModal && (
+                <ActivateCardModal
+                    onClose={() => setShowActivateCardModal(null)}
+                    cardContract={showActivateCardModal}
+                />
+            )}
+            {showCardModal && (
+                <SetCardStatusModal
+                    onClose={() => setShowSetCardStatusModal(null)}
+                    cardContract={showSetCardStatusModal}
                 />
             )}
         </div>
