@@ -85,8 +85,8 @@ export default function ClientList({
                             </div>
                         )}
                         {contract.contractType === "Card" && (
-                            <div>
-                                <div className="w-1/2">
+                            <div className={`grid grid-cols-2 gap-2`}>
+                                <div>
                                     <CommonButton
                                         className="!text-sm"
                                         onClick={(e) =>
@@ -96,7 +96,7 @@ export default function ClientList({
                                         Kích hoạt
                                     </CommonButton>
                                 </div>
-                                <div className="w-1/2">
+                                <div>
                                     <CommonButton
                                         className="!text-sm"
                                         onClick={(e) =>
@@ -194,7 +194,7 @@ export default function ClientList({
                     cardContract={showActivateCardModal}
                 />
             )}
-            {showCardModal && (
+            {showSetCardStatusModal && (
                 <SetCardStatusModal
                     onClose={() => setShowSetCardStatusModal(null)}
                     cardContract={showSetCardStatusModal}
